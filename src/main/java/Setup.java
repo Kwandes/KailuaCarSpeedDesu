@@ -51,8 +51,8 @@ public class Setup {
     // setup the DB connection information and credentials
     private static void setupDB()
     {
-        DBInteraction.setUrl(config.getProperty("url"));
-        DBInteraction.setUser(config.getProperty("username"));
-        DBInteraction.setPasswd(config.getProperty("password"));
+       // DBInteraction.setUrl(config.getProperty("url"));
+        //DBInteraction.setUser(config.getProperty("username"));
+        //DBInteraction.setPasswd(config.getProperty("password"));
     }
 }
