@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Person
 {
-    //ATTRIBUTES
+    //region ATTRIBUTES
     private String firstName;
     private String surname;
     private String phoneNr;
@@ -17,6 +17,7 @@ public class Person
     private String email;
     private String driversLicenceNumber;
     private Date licenceDate;
+    //endregion
 
     //CONSTRUCTORS
     public Person() {}
@@ -45,18 +46,7 @@ public class Person
         this.licenceDate = licenceDate;
     }
 
-    /*public Person(String firstName, String surname, String phoneNr, char sex, Date birthday, String cpr, String country) {
-        this.firstName = firstName;
-        this.surname = surname;
-        this.phoneNr = phoneNr;
-        this.sex = sex;
-        this.birthday = birthday;
-        this.cpr = cpr;
-        this.country = country;
-        //this.city = city;
-    }*/
-
-    //GETTERS N SETTERS
+    //region GETTERS N SETTERS
     public String getZip() {
         return zip;
     }
@@ -152,10 +142,11 @@ public class Person
     public void setCity(String city) {
         this.city = city;
     }
+    //endregion
 
     //STRING FORMATTING
     public String dateString (Date birthday) {
-        DateFormat dtf = new SimpleDateFormat("YYYY-MM-dd");
+        DateFormat dtf = new SimpleDateFormat("dd-MM-yyyy");
         return dtf.format( birthday );
     }
 
@@ -165,25 +156,9 @@ public class Person
         return firstName + " " + surname + " " + phoneNr + " " + sex + " " + birthday + " " + cpr;
     }
 
-    public String DBFullList() {
-        return  "'" + firstName + "', '" + surname + "', '" + phoneNr + "', '" + sex + "', '" + dateString( birthday ) + "', '" + cpr + "'";
-    }
-
-    public String DBPerson() {
-        return  "'" + firstName + "', '" + surname + "', '" + sex + "', '" + phoneNr + "'";
-    }
-
-    public String DBPersonCar() {
+    public String DBToString() {
         return  "'" + firstName + "', '" + surname + "', '" + zip + "', '" + city + "', '" + phoneNr + "', '" +
                 email + "', '" + driversLicenceNumber +  "', '" + dateString(licenceDate) + "'";
-    }
-
-    public String DBChild() {
-        return  "'" + firstName + "', '" + surname + "', '" + sex + "'";
-    }
-
-    public String DBUser() {
-        return  "'" + firstName + "', '" + surname + "'";
     }
 
     public void toStringPrint() {

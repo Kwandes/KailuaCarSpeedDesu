@@ -1,7 +1,10 @@
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Car {
-
+public class Car
+{
+    //Attributes
     private String brand;
     private String fuelType;
     private String registrationNr;
@@ -9,7 +12,8 @@ public class Car {
     private int kmDriven;
 
     //Constructor
-    public Car(String brand, String fuelType, String registrationNr, Date registrationYear, int kmDriven) {
+    public Car(String brand, String fuelType, String registrationNr, Date registrationYear, int kmDriven)
+    {
         this.brand = brand;
         this.fuelType = fuelType;
         this.registrationNr = registrationNr;
@@ -19,7 +23,7 @@ public class Car {
 
     public Car() {}
 
-    //Getters n setters
+    //region Getters n setters
     public String getBrand() {
         return brand;
     }
@@ -58,5 +62,16 @@ public class Car {
 
     public void setKmDriven(int kmDriven) {
         this.kmDriven = kmDriven;
+    }
+    //endregion
+
+    public String dateString (Date birthday) {
+        DateFormat dtf = new SimpleDateFormat("dd-MM-yyyy");
+        return dtf.format( birthday );
+    }
+
+    public String DBtoString()
+    {
+        return "'" + brand + "', '" + fuelType + "', '" + registrationNr + "', '" + dateString (registrationYear) + "', '" + kmDriven + "'";
     }
 }

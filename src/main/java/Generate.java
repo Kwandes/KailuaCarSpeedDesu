@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class PersonGen
+public class Generate
 {
     private ArrayList<String> femaleNames;
     private ArrayList<String> maleNames;
@@ -17,7 +17,7 @@ public class PersonGen
     private ArrayList<String[]> cities;
     private Random rand = new Random();
 
-    public PersonGen ()
+    public Generate()
     {
         femaleNames = loadStringFile("src/txtFiles/femaleNames.txt");
         maleNames = loadStringFile("src/txtFiles/maleNames.txt");
@@ -103,6 +103,7 @@ public class PersonGen
         return email;
     }
 
+    //Works for persons drivers lincece nr AND car registration nr
     public String getDiversLicenceNumber()
     {
         String licenceNr = "";
@@ -127,8 +128,34 @@ public class PersonGen
         c.add(Calendar.DAY_OF_YEAR, 6570);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Date earlyDate = c.getTime();
-        Date licenceDate = getLicenceDateRand( earlyDate );
-        return licenceDate;
+
+        return getRandDate( earlyDate, new Date() );
+    }
+
+    //return a date from now to 180 days from now(ca. 6 months)
+    //used for determining the rental start
+    public Date getRentalDate()
+    {
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DAY_OF_YEAR, 180);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date latest = c.getTime();
+
+        return getRandDate( new Date(), latest );
+    }
+
+    //Takest the rental start date and returns a random end date of rental
+    //MAX 60 days.
+    public Date genRentalPeriod( Date rentalStart )
+    {
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DAY_OF_YEAR, 60);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date latest = c.getTime();
+
+        return getRandDate( rentalStart, latest );
     }
 
     public String getZip (String city)
@@ -188,15 +215,14 @@ public class PersonGen
         return null;
     }
 
-    public Date getLicenceDateRand( Date earliest )
+    public Date getRandDate( Date earliest, Date latest )
     {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try
         {
             Date endExclusive = sdf.parse("01-01-2002");
             long startMillis = earliest.getTime();
-            long endMillis = new Date().getTime();
+            long endMillis = latest.getTime();
             long randomMillisSinceEpoch = ThreadLocalRandom.current()
                     .nextLong(startMillis, endMillis);
 
