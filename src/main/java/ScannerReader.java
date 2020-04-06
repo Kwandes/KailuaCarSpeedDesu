@@ -6,6 +6,7 @@
 import java.util.Scanner;
 
 public class ScannerReader {
+
     public static String scannerAll ()
     {
         Scanner console = new Scanner(System.in);
