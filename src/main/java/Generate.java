@@ -28,23 +28,23 @@ public class Generate
     }
 
     //MAIN METHOD
-    public Costumer returnCostumer()
+    public Customer returnCostumer()
     {
-        Costumer costumer = new Costumer();
-        costumer.setSex( genSex() );
-        costumer.setFirstName( genName( costumer.getSex() ) );
-        costumer.setSurname( genSurname() );
-        costumer.setCountry( "Denmark" );
-        costumer.setCity( genCity() );
-        costumer.setAddress( genAddress( costumer.getCity() ) );
-        costumer.setPhoneNr( genPhoneNr() );
-        costumer.setBirthday( genBirthday() );
-        costumer.setCpr( genCpr( costumer.getBirthday(), costumer.getSex() ) );
-        costumer.setZip( genZip( costumer.getCity() ) );
-        costumer.setDriversLicenceNumber( genDiversLicenceNumber() );
-        costumer.setLicenceDate( genLicenceDate( costumer.getBirthday() ) );
-        costumer.setEmail( genEmail( costumer.getFirstName(), costumer.getSurname() ));
-        return costumer;
+        Customer customer = new Customer();
+        customer.setSex( genSex() );
+        customer.setFirstName( genName( customer.getSex() ) );
+        customer.setSurname( genSurname() );
+        customer.setCountry( "Denmark" );
+        customer.setCity( genCity() );
+        customer.setAddress( genAddress( customer.getCity() ) );
+        customer.setPhoneNr( genPhoneNr() );
+        customer.setBirthday( genBirthday() );
+        customer.setCpr( genCpr( customer.getBirthday(), customer.getSex() ) );
+        customer.setZip( genZip( customer.getCity() ) );
+        customer.setDriversLicenceNumber( genDiversLicenceNumber() );
+        customer.setLicenceDate( genLicenceDate( customer.getBirthday() ) );
+        customer.setEmail( genEmail( customer.getFirstName(), customer.getSurname() ));
+        return customer;
     }
 
     //SINGLE ATTRIBUTE RETURN METHODS

@@ -2,7 +2,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Costumer
+public class Customer
 {
     //region ATTRIBUTES
     private String firstName;
@@ -21,9 +21,9 @@ public class Costumer
     //endregion
 
     //CONSTRUCTORS
-    public Costumer() {}
+    public Customer() {}
 
-    public Costumer(String firstName, String surname, String phoneNr, char sex, Date birthday, String cpr, String address, String city) {
+    public Customer(String firstName, String surname, String phoneNr, char sex, Date birthday, String cpr, String address, String city) {
         this.firstName = firstName;
         this.surname = surname;
         this.phoneNr = phoneNr;
@@ -35,7 +35,7 @@ public class Costumer
         this.city = city;
     }
 
-    public Costumer(String firstName, String surname, String phoneNr, String cpr, String city, String zip, String email, String driversLicenceNumber, Date licenceDate) {
+    public Customer(String firstName, String surname, String phoneNr, String cpr, String city, String zip, String email, String driversLicenceNumber, Date licenceDate) {
         this.firstName = firstName;
         this.surname = surname;
         this.phoneNr = phoneNr;
