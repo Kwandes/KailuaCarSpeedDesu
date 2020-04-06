@@ -28,23 +28,25 @@ public class Generate
     }
 
     //MAIN METHOD
-    public Customer returnCostumer()
+    public String returnCustomer()
     {
-        Customer customer = new Customer();
-        customer.setSex( genSex() );
-        customer.setFirstName( genName( customer.getSex() ) );
-        customer.setSurname( genSurname() );
-        customer.setCountry( "Denmark" );
-        customer.setCity( genCity() );
-        customer.setAddress( genAddress( customer.getCity() ) );
-        customer.setPhoneNr( genPhoneNr() );
-        customer.setBirthday( genBirthday() );
-        customer.setCpr( genCpr( customer.getBirthday(), customer.getSex() ) );
-        customer.setZip( genZip( customer.getCity() ) );
-        customer.setDriversLicenceNumber( genDiversLicenceNumber() );
-        customer.setLicenceDate( genLicenceDate( customer.getBirthday() ) );
-        customer.setEmail( genEmail( customer.getFirstName(), customer.getSurname() ));
-        return customer;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        char sex = genSex();
+        String firstName = genName( sex );
+        String lastName = genSurname();
+        String city = genCity();
+        String zip = genZip( city );
+        String address = genAddress( city );
+        String phoneNr = genPhoneNr();
+        String email = genEmail( firstName, lastName );
+        String driversLicenceNumber = genDiversLicenceNumber();
+        Date birthday = genBirthday();
+        String cpr = genCpr( birthday, sex );
+        Date licenceDate = genLicenceDate( birthday );
+        String licenceDateString = sdf.format( licenceDate );
+
+        return "'" + firstName + "', '" + lastName + "', '" + cpr + "', '" +  zip + "', '" + city + "', '" + address + "', '" + phoneNr + "', '" +
+                email + "', '" + driversLicenceNumber +  "', '" + licenceDateString + "'";
     }
 
     //SINGLE ATTRIBUTE RETURN METHODS
