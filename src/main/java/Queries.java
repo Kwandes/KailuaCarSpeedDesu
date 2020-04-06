@@ -1,27 +1,20 @@
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class UserInteraction {
+public class Queries {
 
-    public static void addPerson(Customer costumor)
+    public static void addPerson(String customer)
     {
         String DBCostumorInfo = "INSERT INTO constumer( " +
-                "first_name, " +
-                "last_name, " +
-                "cpr, " +
-                "zip, " +
-                "city, " +
-                "address, " +
-                "phone_number," +
-                "email," +
-                "drivers_licence_number," +
-                "driver_since_date" +
+                "first_name, last_name, cpr, zip, city, address, phone_number, email, drivers_licence_number, driver_since_date " +
                 ") VALUES ( " +
-                costumor.DBToString() + ");";
+                customer + " );";
         DBInteraction.updateData( DBCostumorInfo );
     }
 
     public static void addRental( Date startDate, Date endDate, int costumerId, int salesmanId, int carId, int maxKm, int startKm)
     {
+        SimpleDateFormat sdf = new SimpleDateFormat( "dd-MM-yyyy");
         String DBContractInfo = "INSERT INTO Contract( " +
                 "date_signed, " +
                 "end_date, " +
@@ -32,7 +25,7 @@ public class UserInteraction {
                 "start_km," +
                 "value" +
                 ") VALUES ( " +
-                "'" + startDate + "', '" + endDate + "', '" + costumerId + "', '" + salesmanId + "', '" + carId +
+                "'" + sdf.format( startDate ) + "', '" + sdf.format( endDate ) + "', '" + costumerId + "', '" + salesmanId + "', '" + carId +
                 "', '" + maxKm + "', '" + startKm + "'";
         DBInteraction.updateData( DBContractInfo );
     }
