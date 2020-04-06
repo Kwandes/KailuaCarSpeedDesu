@@ -9,12 +9,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Generate
 {
+    //region text ArrayLists and Random object
     private ArrayList<String> femaleNames;
     private ArrayList<String> maleNames;
     private ArrayList<String> surnames;
     private ArrayList<String[]> countries;
     private ArrayList<String[]> cities;
     private Random rand = new Random();
+    //endregion
 
     public Generate()
     {
@@ -26,9 +28,9 @@ public class Generate
     }
 
     //MAIN METHOD
-    public Costumor returnPerson()
+    public Costumer returnCostumer()
     {
-        Costumor costumer = new Costumor();
+        Costumer costumer = new Costumer();
         costumer.setSex( genSex() );
         costumer.setFirstName( genName( costumer.getSex() ) );
         costumer.setSurname( genSurname() );
@@ -38,16 +40,11 @@ public class Generate
         costumer.setPhoneNr( genPhoneNr() );
         costumer.setBirthday( genBirthday() );
         costumer.setCpr( genCpr( costumer.getBirthday(), costumer.getSex() ) );
+        costumer.setZip( genZip( costumer.getCity() ) );
+        costumer.setDriversLicenceNumber( genDiversLicenceNumber() );
+        costumer.setLicenceDate( genLicenceDate( costumer.getBirthday() ) );
+        costumer.setEmail( genEmail( costumer.getFirstName(), costumer.getSurname() ));
         return costumer;
-    }
-
-    public Costumor returnPersonCar(Costumor carPerson )
-    {
-        carPerson.setZip( genZip( carPerson.getCity() ) );
-        carPerson.setDriversLicenceNumber( genDiversLicenceNumber() );
-        carPerson.setLicenceDate( genLicenceDate( carPerson.getBirthday() ) );
-        carPerson.setEmail( genEmail( carPerson.getFirstName(), carPerson.getSurname() ));
-        return carPerson;
     }
 
     //SINGLE ATTRIBUTE RETURN METHODS
@@ -130,7 +127,6 @@ public class Generate
         {
             email += ".dk";
         }
-        System.out.println(email);
         return email;
     }
 
@@ -147,46 +143,6 @@ public class Generate
         licenceNr += " " + Char2;
         licenceNr += Char1;
         return licenceNr;
-    }
-
-    //Gets a random date between the age of 18 and till now.
-    //Ex. person was born in 01-01-2000. they turned 18 y/o 01-01-2018.
-    //this will return a date between now (01-04-2020) and 01-01-2018.
-    public Date genLicenceDate( Date birthday )
-    {
-        Calendar c = Calendar.getInstance();
-        c.setTime(birthday);
-        c.add(Calendar.DAY_OF_YEAR, 6570);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        Date earlyDate = c.getTime();
-
-        return genRandDate( earlyDate, new Date() );
-    }
-
-    //return a date from now to 180 days from now(ca. 6 months)
-    //used for determining the rental start
-    public Date genRentalDate()
-    {
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.DAY_OF_YEAR, 180);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        Date latest = c.getTime();
-
-        return genRandDate( new Date(), latest );
-    }
-
-    //Takest the rental start date and returns a random end date of rental
-    //MAX 60 days.
-    public Date genRentalPeriod( Date rentalStart )
-    {
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.DAY_OF_YEAR, 60);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        Date latest = c.getTime();
-
-        return genRandDate( rentalStart, latest );
     }
 
     public String genZip (String city)
@@ -246,22 +202,45 @@ public class Generate
         return null;
     }
 
+    //Gets a random date between the age of 18 and till now.
+    //Ex. person was born in 01-01-2000. they turned 18 y/o 01-01-2018.
+    //this will return a date between now (01-04-2020) and 01-01-2018.
+    public Date genLicenceDate( Date birthday )
+    {
+        Calendar c = Calendar.getInstance();
+        c.setTime(birthday);
+        c.add(Calendar.DAY_OF_YEAR, 6570);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date earlyDate = c.getTime();
+
+        return genRandDate( new Date(), earlyDate );
+    }
+
+    //return a date from now to 180 days from now(ca. 6 months)
+    //used for determining the rental start
+    public Date genRentalDate()
+    {
+        int rentalDays = rand.nextInt(180);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime( new Date() );
+        cal.add(Calendar.DAY_OF_MONTH, rentalDays);
+        return cal.getTime();
+    }
+
+    //Takest the rental start date and returns a random end date of rental
+    //MAX 60 days.
+    public Date genRentalEnd( Date rentalStart )
+    {
+        int rentalDays = rand.nextInt(60);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(rentalStart);
+        cal.add(Calendar.DAY_OF_MONTH, rentalDays);
+        return cal.getTime();
+    }
+
     public Date genRandDate( Date earliest, Date latest )
     {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        try
-        {
-            Date endExclusive = sdf.parse("01-01-2002");
-            long startMillis = earliest.getTime();
-            long endMillis = latest.getTime();
-            long randomMillisSinceEpoch = ThreadLocalRandom.current()
-                    .nextLong(startMillis, endMillis);
-
-            return new Date(randomMillisSinceEpoch);
-        }
-        catch (ParseException e) { e.printStackTrace(); }
-
-        return null;
+        return new Date( ThreadLocalRandom.current().nextLong( latest.getTime(), earliest.getTime() ));
     }
 
     public String genPhoneNr()

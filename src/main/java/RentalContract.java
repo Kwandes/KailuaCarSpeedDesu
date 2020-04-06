@@ -5,66 +5,34 @@ import java.util.Date;
 public class RentalContract
 {
     //region Attributes
-    private String renterName;
-    private String renterZip;
-    private String renterCity;
-    private String renterLicenceNr;
+    private static int contractIdCounter = 0;
     private Date rentalStart;
     private Date rentalEnd;
-    private String maxKm;
-    private String totalKm;
-    private String registrationPlateNr;
+    private int costumerId;
+    private int salesmanId;
+    private int contractId;
+    private int maxKm;
+    private int startKm;
+    private int value;
     //endregion
 
     //Constructora
-    public RentalContract(String renterName, String renterZip, String renterCity, String renterLicenceNr, Date rentalStart, Date rentalEnd, String maxKm, String totalKm, String registrationPlateNr)
-    {
-        this.renterName = renterName;
-        this.renterZip = renterZip;
-        this.renterCity = renterCity;
-        this.renterLicenceNr = renterLicenceNr;
+
+
+    public RentalContract(Date rentalStart, Date rentalEnd, int costumerId, int salesmanId, int maxKm, int startKm, int value) {
+        this.contractId = ++contractIdCounter;
         this.rentalStart = rentalStart;
         this.rentalEnd = rentalEnd;
+        this.costumerId = costumerId;
+        this.salesmanId = salesmanId;
         this.maxKm = maxKm;
-        this.totalKm = totalKm;
-        this.registrationPlateNr = registrationPlateNr;
+        this.startKm = startKm;
+        this.value = value;
     }
 
     public RentalContract() {}
 
-
     //region Getter and setter
-    public String getRenterName() {
-        return renterName;
-    }
-
-    public void setRenterName(String renterName) {
-        this.renterName = renterName;
-    }
-
-    public String getRenterZip() {
-        return renterZip;
-    }
-
-    public void setRenterZip(String renterZip) {
-        this.renterZip = renterZip;
-    }
-
-    public String getRenterCity() {
-        return renterCity;
-    }
-
-    public void setRenterCity(String renterCity) {
-        this.renterCity = renterCity;
-    }
-
-    public String getRenterLicenceNr() {
-        return renterLicenceNr;
-    }
-
-    public void setRenterLicenceNr(String renterLicenceNr) {
-        this.renterLicenceNr = renterLicenceNr;
-    }
 
     public Date getRentalStart() {
         return rentalStart;
@@ -82,29 +50,54 @@ public class RentalContract
         this.rentalEnd = rentalEnd;
     }
 
-    public String getMaxKm() {
+    public int getCostumerId() {
+        return costumerId;
+    }
+
+    public void setCostumerId(int costumerId) {
+        this.costumerId = costumerId;
+    }
+
+    public int getSalesmanId() {
+        return salesmanId;
+    }
+
+    public void setSalesmanId(int salesmanId) {
+        this.salesmanId = salesmanId;
+    }
+
+    public int getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(int contractId) {
+        this.contractId = contractId;
+    }
+
+    public int getMaxKm() {
         return maxKm;
     }
 
-    public void setMaxKm(String maxKm) {
+    public void setMaxKm(int maxKm) {
         this.maxKm = maxKm;
     }
 
-    public String getTotalKm() {
-        return totalKm;
+    public int getStartKm() {
+        return startKm;
     }
 
-    public void setTotalKm(String totalKm) {
-        this.totalKm = totalKm;
+    public void setStartKm(int startKm) {
+        this.startKm = startKm;
     }
 
-    public String getRegistrationPlateNr() {
-        return registrationPlateNr;
+    public int getValue() {
+        return value;
     }
 
-    public void setRegistrationPlateNr(String registrationPlateNr) {
-        this.registrationPlateNr = registrationPlateNr;
+    public void setValue(int value) {
+        this.value = value;
     }
+
     //endregion
 
     public String dateString (Date birthday) {
@@ -115,8 +108,7 @@ public class RentalContract
     //toString
     public String DBtoString()
     {
-        return "'" + renterName + "', '" + renterZip + "', '" + renterCity + "', '" + renterLicenceNr + "', '" +
-                dateString(rentalStart) + "', '" + dateString(rentalEnd) +  "', '" + maxKm + "', '" +
-                totalKm + "', '" + registrationPlateNr + "'";
+        return "'" + dateString(rentalStart) + "', '" + dateString(rentalEnd) + "', '" + costumerId + "', '" + salesmanId + "', '" +
+                contractId +  "', '" + maxKm + "', '" + startKm + "', '" + value + "'";
     }
 }

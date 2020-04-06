@@ -2,7 +2,7 @@ import java.util.Date;
 
 public class UserInteraction {
 
-    public static void addPerson(Costumor costumor)
+    public static void addPerson(Costumer costumor)
     {
         String DBCostumorInfo = "INSERT INTO constumer( " +
                 "first_name, " +
