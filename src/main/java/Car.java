@@ -4,32 +4,115 @@ import java.util.Date;
 
 public class Car
 {
-    //Attributes
+    //region Attributes
+    private int carId;
+    private String model;
     private String brand;
-    private String fuelType;
-    private String registrationNr;
-    private Date registrationYear;
+    private String color;
+    private String plateNr;
+    private Date dateRegistered;
     private int kmDriven;
+    private boolean available;
+    private int seats;
+    private String otherSpec;
+    private int contractId;
+    private String fuelType;
+    private String group;
+    //endregion
 
     //Constructor
-    public Car(String brand, String fuelType, String registrationNr, Date registrationYear, int kmDriven)
-    {
-        this.brand = brand;
-        this.fuelType = fuelType;
-        this.registrationNr = registrationNr;
-        this.registrationYear = registrationYear;
-        this.kmDriven = kmDriven;
-    }
+
 
     public Car() {}
 
     //region Getters n setters
+
+    public int getCarId() {
+        return carId;
+    }
+
+    public void setCarId(int carId) {
+        this.carId = carId;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
     public String getBrand() {
         return brand;
     }
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getPlateNr() {
+        return plateNr;
+    }
+
+    public void setPlateNr(String plateNr) {
+        this.plateNr = plateNr;
+    }
+
+    public Date getDateRegistered() {
+        return dateRegistered;
+    }
+
+    public void setDateRegistered(Date dateRegistered) {
+        this.dateRegistered = dateRegistered;
+    }
+
+    public int getKmDriven() {
+        return kmDriven;
+    }
+
+    public void setKmDriven(int kmDriven) {
+        this.kmDriven = kmDriven;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+
+    public String getOtherSpec() {
+        return otherSpec;
+    }
+
+    public void setOtherSpec(String otherSpec) {
+        this.otherSpec = otherSpec;
+    }
+
+    public int getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(int contractId) {
+        this.contractId = contractId;
     }
 
     public String getFuelType() {
@@ -40,29 +123,14 @@ public class Car
         this.fuelType = fuelType;
     }
 
-    public String getRegistrationNr() {
-        return registrationNr;
+    public String getGroup() {
+        return group;
     }
 
-    public void setRegistrationNr(String registrationNr) {
-        this.registrationNr = registrationNr;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
-    public Date getRegistrationYear() {
-        return registrationYear;
-    }
-
-    public void setRegistrationYear(Date registrationYear) {
-        this.registrationYear = registrationYear;
-    }
-
-    public int getKmDriven() {
-        return kmDriven;
-    }
-
-    public void setKmDriven(int kmDriven) {
-        this.kmDriven = kmDriven;
-    }
     //endregion
 
     public String dateString (Date birthday) {
@@ -72,6 +140,6 @@ public class Car
 
     public String DBtoString()
     {
-        return "'" + brand + "', '" + fuelType + "', '" + registrationNr + "', '" + dateString (registrationYear) + "', '" + kmDriven + "'";
+        return "'" + brand + "', '" + fuelType + "', '" + plateNr + "', '" + dateString (dateRegistered) + "', '" + kmDriven + "'";
     }
 }

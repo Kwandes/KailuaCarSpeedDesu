@@ -2,38 +2,39 @@ import java.util.Date;
 
 public class UserInteraction {
 
-    public static void addPerson(Person person)
+    public static void addPerson(Costumor costumor)
     {
-        String DBPersonInfo = "INSERT INTO person( " +
-                "pe_first_name, " +
-                "pe_last_name, " +
-                "pe_zip, " +
-                "pe_city, " +
-                "pe_cpr, " +
-                "pe_phone," +
-                "pe_email," +
-                "pe_licence_number," +
-                "pe_licence_date" +
+        String DBCostumorInfo = "INSERT INTO constumer( " +
+                "first_name, " +
+                "last_name, " +
+                "cpr, " +
+                "zip, " +
+                "city, " +
+                "address, " +
+                "phone_number," +
+                "email," +
+                "drivers_licence_number," +
+                "driver_since_date" +
                 ") VALUES ( " +
-                person.DBPersonCar() + ");";
-        DBInteraction.updateData( DBPersonInfo );
+                costumor.DBToString() + ");";
+        DBInteraction.updateData( DBCostumorInfo );
     }
 
-    public static void addRental(Person person, Car car, Date startDate, Date endDate)
+    public static void addRental( Date startDate, Date endDate, int costumerId, int salesmanId, int carId, int maxKm, int startKm)
     {
-        String DBPersonInfo = "INSERT INTO person( " +
-                "pe_first_name, " +
-                "pe_last_name, " +
-                "pe_zip, " +
-                "pe_city, " +
-                "pe_cpr, " +
-                "pe_phone," +
-                "pe_email," +
-                "pe_licence_number," +
-                "pe_licence_date" +
+        String DBContractInfo = "INSERT INTO Contract( " +
+                "date_signed, " +
+                "end_date, " +
+                "costumer_id, " +
+                "salesman_id, " +
+                "car_id, " +
+                "max_km, " +
+                "start_km," +
+                "value" +
                 ") VALUES ( " +
-                person.DBPersonCar() + ");";
-        DBInteraction.updateData( DBPersonInfo );
+                "'" + startDate + "', '" + endDate + "', '" + costumerId + "', '" + salesmanId + "', '" + carId +
+                "', '" + maxKm + "', '" + startKm + "'";
+        DBInteraction.updateData( DBContractInfo );
     }
 
 }

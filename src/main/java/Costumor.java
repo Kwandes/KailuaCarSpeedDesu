@@ -2,7 +2,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Person
+public class Costumor
 {
     //region ATTRIBUTES
     private String firstName;
@@ -13,6 +13,7 @@ public class Person
     private String cpr;
     private String country;
     private String city;
+    private String address;
     private String zip;
     private String email;
     private String driversLicenceNumber;
@@ -20,20 +21,21 @@ public class Person
     //endregion
 
     //CONSTRUCTORS
-    public Person() {}
+    public Costumor() {}
 
-    public Person(String firstName, String surname, String phoneNr, char sex, Date birthday, String cpr, String city) {
+    public Costumor(String firstName, String surname, String phoneNr, char sex, Date birthday, String cpr, String address, String city) {
         this.firstName = firstName;
         this.surname = surname;
         this.phoneNr = phoneNr;
         this.sex = sex;
         this.birthday = birthday;
         this.cpr = cpr;
+        this.address = address;
         this.country = "Denmark";
         this.city = city;
     }
 
-    public Person(String firstName, String surname, String phoneNr, String cpr, String city, String zip, String email, String driversLicenceNumber, Date licenceDate) {
+    public Costumor(String firstName, String surname, String phoneNr, String cpr, String city, String zip, String email, String driversLicenceNumber, Date licenceDate) {
         this.firstName = firstName;
         this.surname = surname;
         this.phoneNr = phoneNr;
@@ -47,6 +49,14 @@ public class Person
     }
 
     //region GETTERS N SETTERS
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getZip() {
         return zip;
     }
@@ -157,7 +167,7 @@ public class Person
     }
 
     public String DBToString() {
-        return  "'" + firstName + "', '" + surname + "', '" + zip + "', '" + city + "', '" + phoneNr + "', '" +
+        return  "'" + firstName + "', '" + surname + "', '" + cpr + "', '" +  zip + "', '" + city + "', '" + address + "', '" + phoneNr + "', '" +
                 email + "', '" + driversLicenceNumber +  "', '" + dateString(licenceDate) + "'";
     }
 
