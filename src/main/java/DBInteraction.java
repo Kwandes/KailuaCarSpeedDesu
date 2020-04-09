@@ -22,10 +22,10 @@ public class DBInteraction
         {
             System.out.println("Shits fucked up yo!");
             e.printStackTrace();
+            Log.warning("Failed to get data from the database", e);
             return null;
         }
     }
-    //queryStatement.execute("USE " + schema + ";"); //used to not have to declare schema every time
 
     public static int updateData(String query) //for CRUD queries
     {
@@ -39,6 +39,7 @@ public class DBInteraction
         {
             System.out.println("Shits fucked up yo!");
             e.printStackTrace();
+            Log.warning("Failed to update the database", e);
             return -1;
         }
     }

@@ -6,6 +6,7 @@
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class Setup
@@ -22,6 +23,7 @@ public class Setup
         {
             setupDB();
             setupSecurity();
+            setupLog();
         }
         return true;
     }
@@ -59,5 +61,10 @@ public class Setup
         DBInteraction.setUserName(config.getProperty("username"));
         DBInteraction.setPassword(config.getProperty("password"));
         DBInteraction.setSchema(config.getProperty("schema"));
+    }
+
+    private static void setupLog()
+    {
+        Log.setUserName(config.getProperty("username"));
     }
 }
