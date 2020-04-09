@@ -8,7 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 
-public class Setup {
+public class Setup
+{
     private static Properties config;
 
     // setup the program before you actually run it. Return true if setup was successful
@@ -17,7 +18,8 @@ public class Setup {
 
         // only continue if the config has loaded properly
 
-        if (setupConfig()) {
+        if (setupConfig())
+        {
             setupDB();
             setupSecurity();
         }
@@ -31,10 +33,12 @@ public class Setup {
         {
             config = new Properties();
             config.load(new FileInputStream("config.properties"));
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e)
+        {
             System.out.println("config.properties not found. Make sure to copy it to your project");
             return false;
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.out.println("Something went wrong with reading the config.properties file");
             e.printStackTrace();
             return false;
