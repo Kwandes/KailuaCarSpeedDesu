@@ -56,8 +56,8 @@ public class Setup
     private static void setupDB()
     {
         DBInteraction.setUrl(config.getProperty("url"));
-        DBInteraction.setUrl(config.getProperty("schema"));
         DBInteraction.setUserName(config.getProperty("username"));
         DBInteraction.setPassword(config.getProperty("password"));
+        DBInteraction.setSchema(config.getProperty("schema"));
     }
 }
