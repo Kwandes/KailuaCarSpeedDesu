@@ -7,17 +7,16 @@ public class DBInteraction
     private static String schema;
     private static String userName;
     private static String password;
+    private static Connection openSeSaMe = null;
 
     //region Methods
     public static ResultSet getData(String query) //for SELECT queries
     {
         try
         {
-            Connection openSeSaMe = DriverManager.getConnection(url, userName, password);
             Statement queryStatement = openSeSaMe.createStatement();
             queryStatement.execute("USE " + schema + ";"); //used to not have to declare schema every time
             ResultSet rs = queryStatement.executeQuery(query);
-            openSeSaMe.close();
             return rs;
         } catch (SQLException e)
         {
@@ -26,16 +25,15 @@ public class DBInteraction
             return null;
         }
     }
+    //queryStatement.execute("USE " + schema + ";"); //used to not have to declare schema every time
 
     public static int updateData(String query) //for CRUD queries
     {
         try
         {
-            Connection openSeSaMe = DriverManager.getConnection(url, userName, password);
             Statement queryStatement = openSeSaMe.createStatement();
             queryStatement.execute("USE " + schema + ";"); //used to not have to declare schema every time
             int rs = queryStatement.executeUpdate(query);
-            openSeSaMe.close();
             return rs;
         } catch (SQLException e)
         {
@@ -45,7 +43,32 @@ public class DBInteraction
         }
     }
 
+    // start a connection to the database. Has to be run before the query commands can be used
+    public static void startConnection()
+    {
+        try
+        {
+            openSeSaMe = DriverManager.getConnection(url, userName, password);
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    // close the connection. Run after the program has finished and is closing
+    public static void closeConnection()
+    {
+        try
+        {
+            openSeSaMe.close();
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     //endregion
+
     //region Getters and Setters
     public static void setUrl(String url)
     {

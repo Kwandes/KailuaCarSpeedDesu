@@ -9,11 +9,15 @@ public class Main
         }
         else
         {
+            // Start the connection to the database
+            DBInteraction.startConnection();
+
             // Run the actual program
-        String programClosingStatus = UserInterface.display();
-        System.out.println("Program closed with '" + programClosingStatus + "' status");
+            String programClosingStatus = UserInterface.display();
+            System.out.println("Program closed with '" + programClosingStatus + "' status");
+        }
 
-    }
-
+        // close the connection to the database
+        DBInteraction.closeConnection();
     }
 }
