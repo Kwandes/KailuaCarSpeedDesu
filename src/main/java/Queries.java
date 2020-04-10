@@ -1,6 +1,14 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+//region System.out.prints
+
+
+
+//endregion
+
+//region queries
 public class Queries {
 
     public static void addPerson(String customer)
@@ -29,5 +37,6 @@ public class Queries {
                 "', '" + maxKm + "', '" + startKm + "'";
         DBInteraction.updateData( DBContractInfo );
     }
-
+//endregion
+    
 }
