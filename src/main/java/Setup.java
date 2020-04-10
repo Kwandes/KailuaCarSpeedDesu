@@ -6,9 +6,11 @@
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
-public class Setup {
+public class Setup
+{
     private static Properties config;
 
     // setup the program before you actually run it. Return true if setup was successful
@@ -17,9 +19,11 @@ public class Setup {
 
         // only continue if the config has loaded properly
 
-        if (setupConfig()) {
+        if (setupConfig())
+        {
             setupDB();
             setupSecurity();
+            setupLog();
         }
         return true;
     }
@@ -31,10 +35,12 @@ public class Setup {
         {
             config = new Properties();
             config.load(new FileInputStream("config.properties"));
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e)
+        {
             System.out.println("config.properties not found. Make sure to copy it to your project");
             return false;
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.out.println("Something went wrong with reading the config.properties file");
             e.printStackTrace();
             return false;
@@ -52,8 +58,13 @@ public class Setup {
     private static void setupDB()
     {
         DBInteraction.setUrl(config.getProperty("url"));
-        DBInteraction.setUrl(config.getProperty("schema"));
         DBInteraction.setUserName(config.getProperty("username"));
         DBInteraction.setPassword(config.getProperty("password"));
+        DBInteraction.setSchema(config.getProperty("schema"));
+    }
+
+    private static void setupLog()
+    {
+        Log.setUserName(config.getProperty("username"));
     }
 }
