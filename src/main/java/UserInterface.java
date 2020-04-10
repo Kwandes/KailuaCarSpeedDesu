@@ -27,16 +27,18 @@ public class UserInterface
     */
     public static String display()
     {
+        screenNumber = 5;
         while (programRunning)
         {
             // check for what screen to open next
+
             switch (screenNumber)
             {
                 case 0:
                     quit();
                     break;
                 case 1:
-                    mainMenu();
+
                     break;
                 case 2:
                     displayCustomerInfo();
@@ -48,14 +50,17 @@ public class UserInterface
                     displayCarInfo();
                     break;
                 case 5:
-                    registerCustomer();
+                    Queries.registerCar();
+                    //registerCustomer();
                     break;
                 case 6:
                     registerContract();
                     break;
                 case 7:
-                    registerCar();
+                    Queries.registerCar();
                     break;
+                case 98:
+                    mainMenu();
                 default:
                     mainMenu();
                     break;
@@ -78,14 +83,13 @@ public class UserInterface
     // contains basic interactions with the system
     private static void mainMenu()
     {
-        decorationHeader("Welcome to Kailua Car Rental");
-        printFormat(1, "Display information about customers");
-        printFormat(2, "Display information about contracts");
-        printFormat(3, "Display information about cars");
-        printFormat(4, "Register a new Customer");
-        printFormat(5, "Create a new Contract");
-        printFormat(6, "Register a new Car");
-        printFormat(7, "Quit");
+        Queries.formattedHeader("Welcome to Kailua Car Rental");
+        Queries.formattedPrint(1, "Display information about customers");
+        Queries.formattedPrint(2, "Display information about contracts");
+        Queries.formattedPrint(3, "Register a new Customer");
+        Queries.formattedPrint(4, "Create a new Contract");
+        Queries.formattedPrint(5, "Manage cars");
+        Queries.formattedPrint(6, "Quit");
 
         // get input from user. The method contains input checking
         int input = ScannerReader.scannerInt(1, 7);
@@ -94,22 +98,22 @@ public class UserInterface
         switch (input)
         {
             case 1:
-                screenNumber = 2;
+                screenNumber = 1;
                 break;
             case 2:
-                screenNumber = 3;
+                screenNumber = 2;
                 break;
             case 3:
-                screenNumber = 4;
+                screenNumber = 3;
                 break;
             case 4:
-                screenNumber = 5;
+                screenNumber = 4;
                 break;
             case 5:
-                screenNumber = 6;
+                screenNumber = 5;
                 break;
             case 6:
-                screenNumber = 7;
+                screenNumber = 6;
                 break;
             case 7:
                 quit();
@@ -121,9 +125,9 @@ public class UserInterface
     // displays various information about Customer(s)
     private static void displayCustomerInfo()
     {
-        decorationHeader("Customer Information");
-        printFormat(1, "List all customers");
-        printFormat(2, "Search for a specific customer");
+        Queries.formattedHeader("Customer Information");
+        Queries.formattedPrint(1, "List all customers");
+        Queries.formattedPrint(2, "Search for a specific customer");
         int input = ScannerReader.scannerInt(1,2);
         switch (input)
         {
@@ -140,7 +144,7 @@ public class UserInterface
     // screen number 3
     private static void displayContractInfo()
     {
-        decorationHeader("Contract info");
+        Queries.formattedHeader("Contract info");
         System.out.println("to be implemented!");
         quitOrReturnToMainMenu();
     }
@@ -148,7 +152,7 @@ public class UserInterface
     // screen number 4
     private static void displayCarInfo()
     {
-        decorationHeader("Car info");
+        Queries.formattedHeader("Car info");
         System.out.println("to be implemented!");
         quitOrReturnToMainMenu();
     }
@@ -156,7 +160,7 @@ public class UserInterface
     // screen number 5
     private static void registerCustomer()
     {
-        decorationHeader("Register Customer");
+        Queries.formattedHeader("Register Customer");
         System.out.println("to be implemented!");
         quitOrReturnToMainMenu();
     }
@@ -165,7 +169,7 @@ public class UserInterface
     // screen number 6
     private static void registerContract()
     {
-        decorationHeader("Create a new Contract");
+        Queries.formattedHeader("Create a new Contract");
         System.out.println("to be implemented!");
         quitOrReturnToMainMenu();
     }
@@ -173,7 +177,7 @@ public class UserInterface
     // screen number 7
     private static void registerCar()
     {
-        decorationHeader("Register a Car");
+        Queries.formattedHeader("Register a Car");
         System.out.println("to be implemented!");
         quitOrReturnToMainMenu();
     }
@@ -182,33 +186,8 @@ public class UserInterface
 
     //region Non-screen methods
 
-    // display a provided string in a special format meant for the header text
-    public static void decorationHeader(String title)
-    {
-        System.out.println(decorationLines);
-        int decorationLength = decorationLines.length() / 2;
-        int titleLength = title.length() / 2;
-        int spacerLength = decorationLength - titleLength;
 
-        for (int i = 0; i < spacerLength; i++)
-        {
-            System.out.print(decorationSymbol);
-        }
-        System.out.print(title);
 
-        for (int i = 0; i < spacerLength; i++)
-        {
-            System.out.print(decorationSymbol);
-        }
-        System.out.println();
-        System.out.println(decorationLines);
-    }
-
-    // prints a menu option in a '[num] option text' format
-    public static void printFormat(int num, String text)
-    {
-        System.out.println("[" + num + "] " + text);
-    }
 
     // ask user for input regarding next actions
     private static void quitOrReturnToMainMenu()
