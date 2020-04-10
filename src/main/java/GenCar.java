@@ -2,12 +2,15 @@ import java.util.*;
 
 public class GenCar {
 
+    //all attributes for generating the cars
     public Map<String, Integer> models = new HashMap<>();
     public Map<String, Integer> brands = new HashMap<>();
     public Map<String, Integer> fuelTypes = new HashMap<>();
     public String[] colors = { "Baby Blue", "GayRed", "Shit Brown", "Kinky Yellow", "Black Madness", "white", "green", "Black with flames", "Puke Green", "Dannebrog" };
     public Random rand = new Random();
 
+    //Object for loading models brands and fuelTypes
+    //the hashMaps contain a String (name) and Integer (price pr day increase)
     public GenCar ()
     {
         models.put("W.o.w - Worthless obstacle Wuhu", 50);
@@ -39,6 +42,7 @@ public class GenCar {
         fuelTypes.put( "OilLover", 10 );
     }
 
+    //purely to create
     public String returnCarNoName ()
     {
         return returnCar("Unnamed");
