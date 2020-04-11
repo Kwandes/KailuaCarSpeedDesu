@@ -81,7 +81,9 @@ public class UserInterface
         Queries.formattedPrint(3, "Manage Employees");
         Queries.formattedPrint(4, "Manage cars");
         Queries.formattedPrint(5, "Quit");
-
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         // get input from user. The method contains input checking
         int input = ScannerReader.scannerInt(1, 5);
 
@@ -113,6 +115,9 @@ public class UserInterface
         Queries.formattedHeader("Customer Information");
         Queries.formattedPrint(1, "List all customers");
         Queries.formattedPrint(2, "Search for a specific customer");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         int input = ScannerReader.scannerInt(1,2);
         switch (input)
         {
@@ -177,6 +182,9 @@ public class UserInterface
         System.out.println("what would you like to do next?");
         System.out.println("[1] Return to main menu");
         System.out.println("[2] Quit the program");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         int choice = ScannerReader.scannerInt(1, 2);
         switch (choice)
         {

@@ -3,6 +3,10 @@
     Created by: Itai
  */
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class ScannerReader {
@@ -134,5 +138,34 @@ public class ScannerReader {
         } else {
             return false;
         }
+    }
+
+    //used to return a date later than a specific time
+    public static Date scannerDate( Date minDate )   //HAS NOT BEEN TESTED (Failiure to work with DB)
+    {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Scanner in = new Scanner(System.in);
+        Date endDate = new Date();
+        boolean validDate = false;
+        while (!validDate)
+        {
+            try
+            {
+                String str = in.nextLine().trim();
+                df.setLenient(false);
+                endDate = df.parse(str);
+                if (endDate.after(minDate)) {
+                    validDate = true;
+                } else {
+                    System.out.println("Date must be after the start date.");
+                }
+
+            }
+            catch (ParseException e)
+            {
+                System.out.print("Date must be yyyy-MM-dd and have a valid date: ");
+            }
+        }
+        return endDate;
     }
 }

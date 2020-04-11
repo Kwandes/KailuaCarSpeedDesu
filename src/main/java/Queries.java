@@ -1,5 +1,9 @@
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class Queries {
 
@@ -14,16 +18,17 @@ public class Queries {
     //region manage contracts
     public static void manageContracts()
     {
-
-
         formattedHeader("Manage Contracts");
-
         formattedPrint("What would you like to do?");
         formattedPrint(1,"See all open contracts");
         formattedPrint(2,"Create a new contract");
         formattedPrint(3,"Generate contract(s)");
         formattedPrint(4,"Return to main menu");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         int selection = ScannerReader.scannerInt(1,5);
+
         switch(selection)
         {
             case 1: //see all open contracts
@@ -33,12 +38,20 @@ public class Queries {
                 break;
             case 2: //Create new contract
                 formattedHeader("Create a new contract");
+                String createContractInfo = createContract();
+                //send query
+                addContract( createContractInfo );
                 break;
             case 3: //Generate contract(s)
                 formattedHeader("Generate contract(s)");
                 formattedPrint("How many contracts would you like to generate?");
                 int contractsToGenerate = ScannerReader.scannerInt();
                 //generateContractsCode here ________________________
+                for (int i = 0; i < contractsToGenerate; i++)
+                {
+                    String contractInfo = genContract();
+                }
+                //end gen
                 formattedPrint(contractsToGenerate + " contracts generated.");
                 break;
             case 4: //main menu JAN
@@ -48,8 +61,307 @@ public class Queries {
         //int selection = ScannerReader.scannerInt(1,5);
     }
 
+    private static String createContract()   //HAS NOT BEEN TESTED (Failiure to work with DB)
+    {
+        int salesmanId = -1;            //
+        int carId = -1;                 //
+        int start_km = -1;              //
+        int totalPrice = -1;            //
+        int pricePrDay = -1;            //
+        int customerId = -1;            //
+        int maxKm = -1;                 //
+        String contractEndDate = "";    //
+        String signedDate = "";         //
+        String contractStartDate = "";  //
 
-    //endregion
+        Random rand = new Random();
+        SimpleDateFormat sdtf = new SimpleDateFormat( "yyyy-MM-dd HH:mm");
+
+        //PRINT and select salesman
+        try
+        {
+            String salesmanQuery = "SELECT * FROM Salesman;";
+            ResultSet salesmen = DBInteraction.getData( salesmanQuery );
+            //Print info on all salesmen so user can select salesman for contract
+            formattedHeader("Select a salesman");
+            salesmen.absolute(0);
+            while (salesmen.next())
+            {
+                System.out.printf("ID : %-6s | Name : %-30s | Cpr nr : %-15s ",
+                        salesmen.getString("salesman_id"),
+                        salesmen.getString("first_name") + " " + salesmen.getString("last_name"),
+                        salesmen.getString("cpr"));
+            }
+
+            //Select salesman_id
+            //moves to the first row in the salesman list so i know the smallest id in the DB
+            salesmen.absolute(0);
+            int firstRowId = Integer.parseInt(salesmen.getString("salesman_id"));
+            //moves to the last row in the salesman list so i know the largest id in the DB
+            salesmen.last();
+            int lastRowId = Integer.parseInt(salesmen.getString("salesman_id"));
+            System.out.println();
+            Queries.printLines();
+            System.out.print("\tSelect from " + firstRowId + " - " + lastRowId + " : ");
+            salesmanId = ScannerReader.scannerInt( firstRowId, lastRowId);                   //selects an Salesman_id that is in the DB!
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //PRINT and select a customer or CREATE customer
+        formattedPrint("Do you wish to select a customer or register a new one? ");
+        System.out.println();
+        formattedPrint("[1] select from existing");
+        formattedPrint("[2] register a new one");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
+        int choice = ScannerReader.scannerInt(1,2);
+        if (choice==1)
+        {
+            try
+            {
+                String customerQuery = "SELECT * FROM Customers;";
+                ResultSet customers = DBInteraction.getData( customerQuery );
+                //Print info on all customer so user can select customer for contract
+                formattedHeader("Select a customer");
+                customers.absolute(0);
+                while (customers.next())
+                {
+                    System.out.printf("ID : %-6s | Name : %-30s | Cpr nr : %-15s ",
+                            customers.getString("customer_id"),
+                            customers.getString("first_name") + " " + customers.getString("last_name"),
+                            customers.getString("cpr"));
+                }
+
+                //Select customer_id
+                //moves to the first row in the customer list so i know the smallest id in the DB
+                customers.absolute(0);
+                int firstRowId = Integer.parseInt(customers.getString("customer_id"));
+                //moves to the last row in the customer list so i know the largest id in the DB
+                customers.last();
+                int lastRowId = Integer.parseInt(customers.getString("customer_id"));
+                System.out.println();
+                Queries.printLines();
+                System.out.print("\tSelect from " + firstRowId + " - " + lastRowId + " : ");
+                customerId = ScannerReader.scannerInt( firstRowId, lastRowId);                   //selects an customer_id that is in the DB!
+            }
+            catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+        }
+        else
+        {
+            //fuck that shit
+            System.out.println("Register a new one your self man!");   //DO WE WANT TO MAKE THE REGISTER CUSTOMER METHOD?!?!?!
+
+            //Auto gens a customer for you
+            GenPerson genPerson = new GenPerson();
+            String personInfo = genPerson.returnCustomer();
+            addPerson( personInfo );
+            String personQuery = "SELECT * FROM customer;";
+            //get id of the customer that was just created
+            try{
+                ResultSet customer = DBInteraction.getData( personQuery );
+                customer.last();
+                customerId = Integer.parseInt( customer.getString("customer_id") );
+            }
+            catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+        }
+
+        //PRINT and select car
+        try
+        {
+            String carQuery = "SELECT * FROM Car " +
+                    "WHERE available = 'TRUE';";
+            ResultSet cars = DBInteraction.getData( carQuery );
+            //Print info on all salesmen so user can select salesman for contract
+            formattedHeader("Select a car");
+            cars.absolute(0);
+            while (cars.next())
+            {
+                System.out.printf("ID : %-6s | model : %-25s | brand : %-15s | Price pr Day : %-10s ",
+                        cars.getString("car_id"),
+                        cars.getString("model"),
+                        cars.getString("brand"),
+                        cars.getString("price_per_day"));
+            }
+
+            //Select car_id
+            //moves to the first row in the cars list so i know the smallest id in the DB
+            cars.absolute(0);
+            int firstRowId = Integer.parseInt(cars.getString("car_id"));
+            //moves to the last row in the cars list so i know the largest id in the DB
+            cars.last();
+            int lastRowId = Integer.parseInt(cars.getString("car_id"));
+            System.out.println();
+            Queries.printLines();
+            System.out.print("\tSelect from " + firstRowId + " - " + lastRowId + " : ");
+            carId = ScannerReader.scannerInt( firstRowId, lastRowId);                   //selects an Salesman_id that is in the system!
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //Date signed
+        signedDate = sdtf.format(new Date());
+
+        //get start date
+        Date startDate = ScannerReader.scannerDate( new Date() );
+        contractStartDate = sdtf.format( startDate );
+
+        //get end date (after start of contract date
+        Date endDate = ScannerReader.scannerDate( startDate );
+        contractEndDate = sdtf.format( endDate );
+
+        //get max_km
+        formattedPrint("What should max km limit be? ");
+        Queries.printLines();
+        System.out.print("\tSelect from 0 - 10.000 : ");
+        maxKm = ScannerReader.scannerInt(0, 10000);
+
+        //get start_km
+        try
+        {
+            String carQuery = "SELECT * FROM Car " +
+                    "WHERE car_id = '" + carId + "';";
+            ResultSet cars = DBInteraction.getData( carQuery );
+            start_km = Integer.parseInt( cars.getString("km_driven") );
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //get total price of rental
+        //price pr day from selected car
+        pricePrDay = -1;
+        try
+        {
+            String carQuery = "SELECT * FROM Car " +
+                    "WHERE car_id = '" + carId + "';";
+            ResultSet cars = DBInteraction.getData( carQuery );
+            pricePrDay = Integer.parseInt( cars.getString("price_pr_day") );
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //get amount of days from the rental start and end dates
+        int daysOfRental = GenDate.daysBetween( startDate, endDate );
+        totalPrice = pricePrDay * daysOfRental;
+
+        //Create string for updateQuery
+        return "'" + signedDate + "', '" + contractEndDate + "', '" + customerId +
+                "', '" + salesmanId + "', '" + carId + "', '" + maxKm + "', '" + start_km +  "', '" + totalPrice +
+                "', '" + contractStartDate + "'";
+
+    }
+
+    private static String genContract()  //HAS NOT BEEN TESTED (Failiure to work with DB
+    {
+        int salesmanId = -1;            //
+        int carId = -1;                 //
+        int start_km = -1;              //
+        int totalPrice = -1;            //
+        int pricePrDay = -1;            //
+        int customerId = -1;            //
+        int maxKm = -1;                 //
+        String contractEndDate = "";    //
+        String signedDate = "";         //
+        String contractStartDate = "";  //
+
+        Random rand = new Random();
+        SimpleDateFormat sdtf = new SimpleDateFormat( "yyyy-MM-dd HH:mm");
+
+        //Get random salesman_id from DB
+        try {
+            String salesmanQuery = "SELECT * FROM Salesman;";
+            ResultSet salesmen = DBInteraction.getData(salesmanQuery);
+            //Print info on all salesmen so user can select salesman for contract
+
+            //moves to the first row in the salesman list so i know the smallest id in the DB
+            salesmen.absolute(0);
+            int firstRowId = Integer.parseInt(salesmen.getString("salesman_id"));
+            //moves to the last row in the salesman list so i know the largest id in the DB
+            salesmen.last();
+            int lastRowId = Integer.parseInt(salesmen.getString("salesman_id"));
+
+            //gets a random nr from salesman id's
+            salesmanId = firstRowId + rand.nextInt( lastRowId - firstRowId );
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //Get random car_id from DB
+        try
+        {
+            String carQuery = "SELECT * FROM Car " +
+                    "WHERE available = 'TRUE';";
+            ResultSet cars = DBInteraction.getData( carQuery );
+            //Print info on all salesmen so user can select salesman for contract
+            cars.absolute(0);
+
+            //Select car_id
+            //moves to the first row in the cars list so i know the smallest id in the DB
+            cars.absolute(0);
+            int firstRowId = Integer.parseInt(cars.getString("car_id"));
+            //moves to the last row in the cars list so i know the largest id in the DB
+            cars.last();
+            int lastRowId = Integer.parseInt(cars.getString("car_id"));
+
+            //gets a random nr from car id's
+            carId = firstRowId + rand.nextInt( lastRowId - firstRowId );
+
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //Get start km from selected car
+        try
+        {
+            String carQuery = "SELECT * FROM Car " +
+                    "WHERE car_id = '" + carId + "';";
+            ResultSet cars = DBInteraction.getData( carQuery );
+            start_km = Integer.parseInt( cars.getString("km_driven") );
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //Get price from selected car
+        try
+        {
+            String carQuery = "SELECT * FROM Car " +
+                    "WHERE car_id = '" + carId + "';";
+            ResultSet cars = DBInteraction.getData( carQuery );
+            pricePrDay = Integer.parseInt( cars.getString("price_pr_day") );
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //Date signed
+        signedDate = sdtf.format(new Date());
+
+        //Get get random Customer id from DB
+        try
+        {
+            String customerQuery = "SELECT * FROM Customers;";
+            ResultSet customers = DBInteraction.getData( customerQuery );
+            //Print info on all customer so user can select customer for contract
+
+            //moves to the first row in the customer list so i know the smallest id in the DB
+            customers.absolute(0);
+            int firstRowId = Integer.parseInt(customers.getString("customer_id"));
+            //moves to the last row in the customer list so i know the largest id in the DB
+            customers.last();
+            int lastRowId = Integer.parseInt(customers.getString("customer_id"));
+            customerId = firstRowId + rand.nextInt( lastRowId - firstRowId );                   //selects a random customer_id that is in the DB!
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //Get contract start date
+        Date rentalStart = GenDate.genRentalDate();
+        contractStartDate = sdtf.format( rentalStart );
+
+        //Get contract end date
+        Date rentalEnd = GenDate.genRentalEnd( rentalStart );
+        contractEndDate = sdtf.format( rentalEnd );
+
+        //Get total price from daysRented * pricePrDay
+        totalPrice = pricePrDay * GenDate.daysBetween( rentalStart, rentalEnd);
+
+        //Create string for updateQuery
+        return "'" + signedDate + "', '" + contractEndDate + "', '" + customerId +
+                "', '" + salesmanId + "', '" + carId + "', '" + maxKm + "', '" + start_km +  "', '" + totalPrice +
+                "', '" + contractStartDate + "'";
+    }
+    //endregion Contract Management
 
     //region menu manageCar
     public static void registerCar()
@@ -57,33 +369,45 @@ public class Queries {
         formattedHeader("Register a new car");
         formattedPrint("Please type the name of the new car");
         String model_TEMP = ScannerReader.scannerWords();
+
         formattedPrint("Please type the brand of the new car");
         String brand_TEMP = ScannerReader.scannerWords();
+
         formattedPrint("Please type the color of the new car"); //default is white
         String color_TEMP = ScannerReader.scannerWords();
+
         formattedPrint("Please type the plate number of the new car");
         String plate_number_TEMP = ScannerReader.scannerAll();
+
         formattedPrint("Generating registry date of car based on current time");
-        slowScroll(1000, "... ");//the date we acquire it
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String reg_date = sdf.format(new Date());
+        slowScroll(1000, "..........");//the date we acquire it
         System.out.println("Registry date is: " + reg_date);
+
         formattedPrint("Please type the current kilometers on the dial of the car"); //default is 0
         int km_driven_TEMP = ScannerReader.scannerInt(0, 200000);
+
         formattedPrint("Please type the amount of seats the car has"); //default is 4
         int seats_TEMP = ScannerReader.scannerInt(2,9);
+
         formattedPrint("Please type the slogan or catchphrase of the new car, if it has one"); //an example is "I am Speed" for 'Lightning McQueen'
         String other_specifications_TEMP = ScannerReader.scannerWords();
+
         formattedPrint("Please type the fuel type of the new car"); //default is gas
         String fuel_type_TEMP = ScannerReader.scannerWords();
+
         formattedPrint("Lastly, please type the price per day of lease of the new car");
         int price_per_day_TEMP = ScannerReader.scannerInt(1, 9999); //DB type is INT. I made a string because idk how you wanna use it
+
         //create query
         String carInfo = "'" + model_TEMP + "', '" + brand_TEMP + "', '" +  color_TEMP + "', '" + plate_number_TEMP + "', '" + reg_date +
                          "', 'TRUE', '" + km_driven_TEMP + "', '" + seats_TEMP + "', '" + other_specifications_TEMP +  "', '" + fuel_type_TEMP +
                          "', '" + price_per_day_TEMP + "'";
-        //send query?
+        //send query
+        addCar( carInfo );
     }
+
     public static void deleteCar()
     {
         formattedHeader("Delete a car");
@@ -100,6 +424,7 @@ public class Queries {
         Queries.printLines();
         System.out.print("\tSelect : ");
         int choice = ScannerReader.scannerInt(1,2);
+
         switch (choice)
         {
             case 1:
@@ -109,7 +434,9 @@ public class Queries {
                 if (deleted=true)
                 {
                     formattedPrint("The car you selected has been deleted");
-                } else {
+                }
+                else
+                {
                     formattedPrint("There was an error deleting the desired car");
                 }
                 break;
@@ -122,6 +449,7 @@ public class Queries {
         }
 
     }
+
     public static void sortCarsInList()
     {
         formattedHeader("List of all cars");
@@ -135,6 +463,7 @@ public class Queries {
         Queries.printLines();
         System.out.print("\tSelect : ");
         int choice = ScannerReader.scannerInt(1,5);
+
         switch(choice)
         {
             case 1: //sort Model Name
@@ -154,6 +483,7 @@ public class Queries {
                 break;
         }
     }
+
     public static void updateCar()
     {
         //uuurgh
@@ -171,12 +501,18 @@ public class Queries {
         Queries.printLines();
         System.out.print("\tSelect : ");
         int editChoice = ScannerReader.scannerInt(1,4);
+
         String text = "";
-        if (editChoice == 1) {
+        if (editChoice == 1)
+        {
             text = "color";
-        } else if (editChoice ==2){
+        }
+        else if (editChoice ==2)
+        {
             text = "contract ID";
-        } else if (editChoice ==3){
+        }
+        else if (editChoice ==3)
+        {
             text = "daily price";
         }
         if (editChoice!=4)
@@ -188,7 +524,9 @@ public class Queries {
                 String carEdit = ScannerReader.scannerWords();
 
                 //int price_per_day = Integer.parseInt(carEdit);
-            } else {
+            }
+            else
+            {
                 int carEdit = ScannerReader.scannerInt();
             }
             boolean success = false;
@@ -197,7 +535,8 @@ public class Queries {
             if (success)
             {
                 formattedPrint("The car's " + text + " has been updated");
-            } else
+            }
+            else
             {
                 formattedPrint("Something went wrong updating the car's " + text);
             }
@@ -217,6 +556,7 @@ public class Queries {
         Queries.printLines();
         System.out.print("\tSelect : ");
         int selection = ScannerReader.scannerInt(1,5);
+
         switch(selection)
         {
             case 1: //See a sorted list of cars
@@ -236,13 +576,12 @@ public class Queries {
                 break;
         }
     }
-    //endregion
-    //endregion
+    //endregion Manage Car
+    //endregion Menu methods
 
     //region System.out.print Methods
     public static void formattedPrint(String text)
     {
-
         System.out.printf("%-4s%-95s%-4s%n", art, text, art);
     }
     // prints a menu option in a '[num] option text' format
@@ -251,23 +590,22 @@ public class Queries {
         System.out.printf("%-4s [" + num + "] %-90s%-4s%n", art, text, art);
         //System.out.println("[" + num + "] " + text);
     }
-    public static void slowScroll(int delay, String text){
-        for(int i = 0; i < text.length(); i++) {
+    public static void slowScroll(int delay, String text)
+    {
+        for(int i = 0; i < text.length(); i++)
+        {
             long start = System.currentTimeMillis();
-            while (System.currentTimeMillis() - start < delay) {
-
-            }
+            while (System.currentTimeMillis() - start < delay) { }
             System.out.print(text.charAt(i));
         }
         System.out.println();
     }
-    public static void slowScroll(String text){
-        for(int i = 0; i < text.length(); i++) {
+    public static void slowScroll(String text)
+    {
+        for(int i = 0; i < text.length(); i++)
+        {
             long start = System.currentTimeMillis();
-            while (System.currentTimeMillis() - start < 100)
-            {
-
-            }
+            while (System.currentTimeMillis() - start < 100) { }
             System.out.print(text.charAt(i));
         }
         System.out.println();
@@ -288,10 +626,9 @@ public class Queries {
         System.out.printf("%-" + numbers + "s%s%" + numbers + "s%n", art, text, art);
         printLines();
         System.out.println();
-        System.out.println();
     }
 
-    private static void printLines()
+    static void printLines()
     {
         for (int i=0; i<=headerLinesCount; i++)
         {
@@ -300,7 +637,8 @@ public class Queries {
         System.out.println();
     }
     //endregion
-    //endregion
+
+    //endregion system.out.prints
 
     //region queries
     public static void addPerson(String customerInfo)
@@ -327,7 +665,7 @@ public class Queries {
     //Contact info should be formattet ( Date startDate, Date endDate, int costumerId, int salesmanId, int carId, int maxKm, int startKm ) in a db query string
     public static void addContract( String contractInfo ) {
         String DBContractInfo = "INSERT INTO Contract( " +
-                "date_signed, end_date, costumer_id, salesman_id, car_id, max_km, start_km, value " +
+                "date_signed, end_date, costumer_id, salesman_id, car_id, max_km, start_km, value, start_date " +
                 ") VALUES ( " +
                 contractInfo + " );";
         //Remember to set the choosen car's contract_id to match this contracts primary key

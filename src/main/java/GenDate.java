@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public class GenDate {
 
@@ -28,6 +29,12 @@ public class GenDate {
         catch (ParseException e) { e.printStackTrace(); }
 
         return null;
+    }
+
+    //Get (int) days between two dates
+    public static int daysBetween(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     public static Date genCarRegDate()
