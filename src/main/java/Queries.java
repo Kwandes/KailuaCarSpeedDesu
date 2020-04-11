@@ -465,40 +465,91 @@ public class Queries {
         formattedPrint(2,"By brand name");
         formattedPrint(3,"By number of seats");
         formattedPrint(4,"By availability");
-        formattedPrint(5,"Return to main Menu");
+        formattedPrint(5,"By price pr day");
+        formattedPrint(6,"Return to main Menu");
         System.out.println();
         Queries.printLines();
         System.out.print("\tSelect : ");
-        int choice = ScannerReader.scannerInt(1,5);
+        int choice = ScannerReader.scannerInt(1,6);
 
         switch(choice)
         {
             case 1: //sort Model Name
                 formattedHeader("Sort by model name");
+                String carQuery = "SELECT * FROM Car ORDER BY model;";
+                printCarInfo(carQuery);
                 break;
             case 2: //sort Brand Name
                 formattedHeader("Sort by brand name");
+                carQuery = "SELECT * FROM Car ORDER BY brand;";
+                printCarInfo(carQuery);
                 break;
             case 3: //sort Number of seats
                 formattedHeader("Sort by number of seats");
+                carQuery = "SELECT * FROM Car ORDER BY seats;";
+                printCarInfo(carQuery);
                 break;
             case 4: //sort Availability
                 formattedHeader("Sort by Availability");
+                carQuery = "SELECT * FROM Car ORDER BY available;";
+                printCarInfo(carQuery);
                 break;
-            case 5: //main menu
+            case 5: //sort Availability
+                formattedHeader("Sort by price pr day");
+                carQuery = "SELECT * FROM Car ORDER BY price_pr_day;";
+                printCarInfo(carQuery);
+                break;
+            case 6: //main menu
 
                 break;
         }
     }
 
+    public static void printCarInfo( String carQuery )
+    {
+        try {
+            ResultSet cars = DBInteraction.getData(carQuery);
+            //Print info on all salesmen so user can select salesman for contract
+            formattedHeader("Select a car");
+            cars.absolute(0);
+            while (cars.next()) {
+                System.out.printf("ID : %-6s | model : %-25s | brand : %-15s | Price pr Day : %-10s ",
+                        cars.getString("car_id"),
+                        cars.getString("model"),
+                        cars.getString("brand"),
+                        cars.getString("price_per_day"));
+            }
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+    }
+
     public static void updateCar()
     {
         //uuurgh
+        int carId = -1;
         formattedHeader("Change car details");
         formattedPrint("Please select a car");
         //print list of all cars
-        //'choice' is the car_ID of the chose car
-        int choice = ScannerReader.scannerInt();
+        String carQuery = "SELECT * FROM Car;";
+        printCarInfo(carQuery);
+
+        //now select a car
+        ResultSet cars = DBInteraction.getData(carQuery);
+        try
+        {
+             cars.absolute(0);
+             int firstRowId = Integer.parseInt(cars.getString("car_id"));
+             //moves to the last row in the cars list so i know the largest id in the DB
+             cars.last();
+             int lastRowId = Integer.parseInt(cars.getString("car_id"));
+             System.out.println();
+             Queries.printLines();
+             System.out.print("\tSelect from " + firstRowId + " - " + lastRowId + " : ");
+             carId = ScannerReader.scannerInt( firstRowId, lastRowId);                   //selects an Salesman_id that is in the system!
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+
+        //Select what you want to change
         formattedPrint("What would you like to change?");
         formattedPrint(1,"Color");
         formattedPrint(2,"Contract ID of a car");
@@ -507,8 +558,8 @@ public class Queries {
         System.out.println();
         Queries.printLines();
         System.out.print("\tSelect : ");
-        int editChoice = ScannerReader.scannerInt(1,4);
-
+        int editChoice = ScannerReader.scannerInt(1,4);                                 //THIS IS AS FAR AS I GOT WITH THE UPDATE CAR METHOD
+                                                                                        //I AM NOW TOO TIRED TO CONTINUE WORKING LOL SES TABERE 
         String text = "";
         if (editChoice == 1)
         {
