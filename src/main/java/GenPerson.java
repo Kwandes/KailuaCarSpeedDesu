@@ -28,9 +28,10 @@ public class GenPerson
     }
 
     //MAIN METHOD
+    //Generates all the info of a customer in a string format made for an SQL Query update
+    //Only works with the 'addPerson' method in Queries.
     public String returnCustomer()
     {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         char sex = genSex();
         String firstName = genName( sex );
         String lastName = genSurname();
