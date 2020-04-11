@@ -48,6 +48,8 @@ public class GenCar {
         return returnCar("Unnamed");
     }
 
+    //Generates all the info of a car in a string format made for an SQL Query update
+    //Only works with the 'addCar' method in Queries.
     public String returnCar (String name)
     {
         String model = genModel();
@@ -56,15 +58,17 @@ public class GenCar {
         String plateNr = genPlateNr();
         Date regDate = GenDate.genCarRegDate();
         int kmDriven = genKmDriven();
+        boolean isAvailable = true;
         int seats = 3 + rand.nextInt(4);
         String otherSpects = "Suck my pp, theres nothing more to say.";
         String fuelType = genFuelType();
         int pricePrDay = genPricePrDay( model, brand, kmDriven, seats, fuelType );
 
-        return "'" + name + "', '" + model + "', '" + brand + "', '" +  color + "', '" + plateNr + "', '" + GenDate.dateToString( regDate ) +
-                "', '" + kmDriven + "', '" + seats + "', '" + otherSpects +  "', '" + fuelType +  "', '" + pricePrDay + "'";
+        return "'" + model + "', '" + brand + "', '" +  color + "', '" + plateNr + "', '" + GenDate.dateToString( regDate ) +
+                "', '" + isAvailable + "', '" + kmDriven + "', '" + seats + "', '" + otherSpects +  "', '" + fuelType +  "', '" + pricePrDay + "'";
     }
 
+    //Generates the prace pr day from the attributes of the car (Model, Brabd, kmDriven, Seats, fuelType)
     private int genPricePrDay(String model, String brand, int kmDriven, int seats, String fuelType)
     {
         double kmDrivenPrice = 0;
@@ -75,10 +79,13 @@ public class GenCar {
         } else {
             kmDrivenPrice = 15;
         }
+        //3 $ pr seat in the car
         int seatPrice = seats * 3;
+        //each brand model and fueltype has an int value connected that is the price.
         return models.get(model) + brands.get(brand) + fuelTypes.get(fuelType) + (int) kmDrivenPrice + seatPrice;
     }
 
+    //returns a random fueltype from the fueltype hasmap.
     private String genFuelType()
     {
         Object[] crunchifyKeys = fuelTypes.keySet().toArray();
@@ -86,11 +93,13 @@ public class GenCar {
         return key.toString();
     }
 
+    //random km driven from min 50km - 10.000km (we dont have old shitty cars ;) ;) ;) )
     private int genKmDriven()
     {
         return 50 + rand.nextInt(10000);
     }
 
+    //plate nr is just 6 random numbers and 2 random upperCase letters. xxxxxx XX format
     private String genPlateNr()
     {
         String licenceNr = "";
@@ -105,11 +114,13 @@ public class GenCar {
         return licenceNr;
     }
 
+    //returns a color from the color[]
     private String genColor()
     {
         return colors[ rand.nextInt( colors.length ) ];
     }
 
+    //returns a random carBrand from the brands hasmap.
     private String genBrand()
     {
         Object[] crunchifyKeys = brands.keySet().toArray();
@@ -117,6 +128,7 @@ public class GenCar {
         return key.toString();
     }
 
+    //returns a random Model from the models hasmap.
     private String genModel()
     {
         Object[] crunchifyKeys = models.keySet().toArray();
