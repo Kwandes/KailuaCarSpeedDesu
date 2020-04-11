@@ -10,6 +10,55 @@ public class Queries {
     //region System.out.prints
 
     //region menu methods
+
+    //region manage contracts
+    public static void manageContracts()
+    {
+
+
+        formattedHeader("Manage Contracts");
+
+        formattedPrint("What would you like to do?");
+        formattedPrint(1,"See all open contracts");
+        formattedPrint(2,"See all closed contracts");
+        formattedPrint(3,"Create a new contract");
+        formattedPrint(4,"Generate contract(s)");
+        formattedPrint(5,"Return to main menu");
+        int selection = ScannerReader.scannerInt(1,5);
+        switch(selection)
+        {
+            case 1: //see all open contracts
+                formattedHeader("See all open contracts");
+                formattedPrint("Getting the list of all open contracts");
+                slowScroll(1000, "... ");
+                break;
+            case 2: //see all closed contracts
+                formattedHeader("See all closed contracts");
+                formattedPrint("Getting the list of all closed contracts");
+                slowScroll(1000, "... ");
+                break;
+            case 3: //Create new contract
+                formattedHeader("Create a new contract");
+                break;
+            case 4: //Generate contract(s)
+                formattedHeader("Generate contract(s)");
+                formattedPrint("How many contracts would you like to generate?");
+                int contractsToGenerate = ScannerReader.scannerInt();
+                //generateContractsCode here ________________________
+                formattedPrint(contractsToGenerate + " contracts generated.");
+                break;
+            case 5: //main menu JAN
+
+                break;
+        }
+
+        //int selection = ScannerReader.scannerInt(1,5);
+    }
+
+
+    //endregion
+
+    //region menu manageCar
     public static void registerCar()
     {
         formattedHeader("Register a new car");
@@ -47,7 +96,7 @@ public class Queries {
         int selection = ScannerReader.scannerInt();
         formattedPrint("You have selected car ID " + selection);
         formattedPrint("Are you sure you wish to delete this car from the database?");
-        slowScroll(300, "This action can't be undone later "); //amazing
+        slowScroll(300, "This can't be undone "); //amazing
         System.out.println();
         formattedPrint("[1] Yes.");
         formattedPrint("[2] No.");
@@ -180,6 +229,7 @@ public class Queries {
         }
     }
     //endregion
+    //endregion
 
     //region System.out.print Methods
     public static void formattedPrint(String text)
@@ -206,7 +256,8 @@ public class Queries {
     public static void slowScroll(String text){
         for(int i = 0; i < text.length(); i++) {
             long start = System.currentTimeMillis();
-            while (System.currentTimeMillis() - start < 100) {
+            while (System.currentTimeMillis() - start < 100)
+            {
 
             }
             System.out.print(text.charAt(i));

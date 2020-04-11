@@ -38,10 +38,11 @@ public class UserInterface
                     quit();
                     break;
                 case 1: //Manage Costumers
-                    mainMenu();
+                    //mainMenu();
                     break;
                 case 2: //Mange Contracts
-                    displayCustomerInfo();
+                    Queries.manageContracts();
+                    quitOrReturnToMainMenu();
                     break;
                 case 3: //Manage Employees
                     displayContractInfo();
