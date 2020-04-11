@@ -86,6 +86,9 @@ public class Queries {
         formattedPrint("Lastly, please type the price per day of lease of the new car");
         int price_per_day_TEMP = ScannerReader.scannerInt(1, 9999); //DB type is INT. I made a string because idk how you wanna use it
         //create query
+        String carInfo = "'" + model_TEMP + "', '" + brand_TEMP + "', '" +  color_TEMP + "', '" + plate_number_TEMP + "', '" + reg_date +
+                         "', 'TRUE', '" + km_driven_TEMP + "', '" + seats_TEMP + "', '" + other_specifications_TEMP +  "', '" + fuel_type_TEMP +
+                         "', '" + price_per_day_TEMP + "'";
         //send query?
     }
     public static void deleteCar()
@@ -100,6 +103,9 @@ public class Queries {
         System.out.println();
         formattedPrint("[1] Yes.");
         formattedPrint("[2] No.");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         int choice = ScannerReader.scannerInt(1,2);
         switch (choice)
         {
@@ -132,6 +138,9 @@ public class Queries {
         formattedPrint(3,"By number of seats");
         formattedPrint(4,"By availability");
         formattedPrint(5,"Return to main Menu");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         int choice = ScannerReader.scannerInt(1,5);
         switch(choice)
         {
@@ -165,6 +174,9 @@ public class Queries {
         formattedPrint(2,"Contract ID of a car");
         formattedPrint(3,"Daily Price of a car");
         formattedPrint(4, "Cancel");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         int editChoice = ScannerReader.scannerInt(1,4);
         String text = "";
         if (editChoice == 1) {
@@ -208,6 +220,9 @@ public class Queries {
         formattedPrint(3,"Change some details of a car");
         formattedPrint(4,"Delete a car from the database");
         formattedPrint(5,"Return to main menu");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
         int selection = ScannerReader.scannerInt(1,5);
         switch(selection)
         {
@@ -295,31 +310,36 @@ public class Queries {
     //endregion
 
     //region queries
-    public static void addPerson(String customer)
+    public static void addPerson(String customerInfo)
     {
-        String DBCostumorInfo = "INSERT INTO constumer( " +
+        String DBCustomerInfo = "INSERT INTO cunstomer( " +
                 "first_name, last_name, cpr, zip, city, address, phone_number, email, drivers_licence_number, driver_since_date " +
                 ") VALUES ( " +
-                customer + " );";
-        DBInteraction.updateData(DBCostumorInfo);
+                customerInfo + " );";
+        int rows = DBInteraction.updateData( DBCustomerInfo ); //For verification that the data was updated
+        System.out.println( "Rows effected : " + rows);
     }
 
-    public static void addRental(Date startDate, Date endDate, int costumerId, int salesmanId, int carId, int maxKm, int startKm)
+    public static void addCar(String carInfo)
     {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        String DBContractInfo = "INSERT INTO Contract( " +
-                "date_signed, " +
-                "end_date, " +
-                "costumer_id, " +
-                "salesman_id, " +
-                "car_id, " +
-                "max_km, " +
-                "start_km," +
-                "value" +
+        String DBCarInfo = "INSERT INTO Car( " +
+                "model, brand, color, plate_number, date_registered, km_driven, available, seats, other_specifications, fuel_type, price_pr_day " +
                 ") VALUES ( " +
-                "'" + sdf.format(startDate) + "', '" + sdf.format(endDate) + "', '" + costumerId + "', '" + salesmanId + "', '" + carId +
-                "', '" + maxKm + "', '" + startKm + "'";
-        DBInteraction.updateData(DBContractInfo);
+                carInfo + " );";
+        int rows = DBInteraction.updateData( DBCarInfo ); //For verification that the data was updated
+        System.out.println( "Rows effected : " + rows);
+    }
+
+
+    //Contact info should be formattet ( Date startDate, Date endDate, int costumerId, int salesmanId, int carId, int maxKm, int startKm ) in a db query string
+    public static void addContract( String contractInfo ) {
+        String DBContractInfo = "INSERT INTO Contract( " +
+                "date_signed, end_date, costumer_id, salesman_id, car_id, max_km, start_km, value " +
+                ") VALUES ( " +
+                contractInfo + " );";
+        //Remember to set the choosen car's contract_id to match this contracts primary key
+        int rows = DBInteraction.updateData(DBContractInfo);
+        System.out.println( "Rows effected : " + rows);   //For verification that the data was updated
     }
     //endregion
 }
