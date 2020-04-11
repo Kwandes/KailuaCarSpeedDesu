@@ -167,36 +167,7 @@ public class Queries {
         }
 
         //PRINT and select car
-        try
-        {
-            String carQuery = "SELECT * FROM Car " +
-                    "WHERE available = 'TRUE';";
-            ResultSet cars = DBInteraction.getData( carQuery );
-            //Print info on all salesmen so user can select salesman for contract
-            formattedHeader("Select a car");
-            cars.absolute(0);
-            while (cars.next())
-            {
-                System.out.printf("ID : %-6s | model : %-25s | brand : %-15s | Price pr Day : %-10s ",
-                        cars.getString("car_id"),
-                        cars.getString("model"),
-                        cars.getString("brand"),
-                        cars.getString("price_per_day"));
-            }
-
-            //Select car_id
-            //moves to the first row in the cars list so i know the smallest id in the DB
-            cars.absolute(0);
-            int firstRowId = Integer.parseInt(cars.getString("car_id"));
-            //moves to the last row in the cars list so i know the largest id in the DB
-            cars.last();
-            int lastRowId = Integer.parseInt(cars.getString("car_id"));
-            System.out.println();
-            Queries.printLines();
-            System.out.print("\tSelect from " + firstRowId + " - " + lastRowId + " : ");
-            carId = ScannerReader.scannerInt( firstRowId, lastRowId);                   //selects an Salesman_id that is in the system!
-        }
-        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+        carId = getCarId();
 
         //Date signed
         signedDate = sdtf.format(new Date());
@@ -408,13 +379,48 @@ public class Queries {
         addCar( carInfo );
     }
 
+    public static int getCarId() {
+        int carId = -1;
+        try
+        {
+            String carQuery = "SELECT * FROM Car " +
+                    "WHERE available = 'TRUE';";
+            ResultSet cars = DBInteraction.getData( carQuery );
+            //Print info on all salesmen so user can select salesman for contract
+            formattedHeader("Select a car");
+            cars.absolute(0);
+            while (cars.next())
+            {
+                System.out.printf("ID : %-6s | model : %-25s | brand : %-15s | Price pr Day : %-10s ",
+                        cars.getString("car_id"),
+                        cars.getString("model"),
+                        cars.getString("brand"),
+                        cars.getString("price_per_day"));
+            }
+
+            //Select car_id
+            //moves to the first row in the cars list so i know the smallest id in the DB
+            cars.absolute(0);
+            int firstRowId = Integer.parseInt(cars.getString("car_id"));
+            //moves to the last row in the cars list so i know the largest id in the DB
+            cars.last();
+            int lastRowId = Integer.parseInt(cars.getString("car_id"));
+            System.out.println();
+            Queries.printLines();
+            System.out.print("\tSelect from " + firstRowId + " - " + lastRowId + " : ");
+            carId = ScannerReader.scannerInt( firstRowId, lastRowId);                   //selects an Salesman_id that is in the system!
+        }
+        catch (SQLException | NullPointerException e) { e.printStackTrace(); }
+        return carId;
+    }
+
     public static void deleteCar()
     {
+        int carIdToRemove = -1;
         formattedHeader("Delete a car");
         //print list of cars here with their IDs
-        formattedPrint("Please type the car ID to delete");
-        int selection = ScannerReader.scannerInt();
-        formattedPrint("You have selected car ID " + selection);
+        carIdToRemove = getCarId();
+        formattedPrint("You have selected car ID " + carIdToRemove);
         formattedPrint("Are you sure you wish to delete this car from the database?");
         slowScroll(300, "This can't be undone "); //amazing
         System.out.println();
@@ -428,11 +434,12 @@ public class Queries {
         switch (choice)
         {
             case 1:
-                boolean deleted = false;
-                //create query to delete the car
-                //send the query, if query is successful then deleted = true.
-                if (deleted=true)
+                String removalQuery = "DELETE FROM Car WHERE car_id = '" + carIdToRemove + "';";
+                int rowsAffected = DBInteraction.updateData( removalQuery );
+
+                if (rowsAffected >= 1)
                 {
+
                     formattedPrint("The car you selected has been deleted");
                 }
                 else

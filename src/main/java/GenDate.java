@@ -34,7 +34,7 @@ public class GenDate {
     //Get (int) days between two dates
     public static int daysBetween(Date d1, Date d2) {
         long diff = d2.getTime() - d1.getTime();
-        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+        return 1 + (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     public static Date genCarRegDate()
