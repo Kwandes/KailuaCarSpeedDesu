@@ -2,8 +2,35 @@
     Methods for generation etc of Neo4j (Cypher) queries
  */
 
+import java.util.List;
+
 public class Neo4jQueries
 {
+    // region Create
+    // Creates a Node with the Dealership label for all the specified locations.
+    public static String createDealership (List<String> locations) {
+        String query = "CREATE ";
+        int i = 0;
+        while ( i < locations.size()-1 )
+        {
+            query += "d" + i + ":Dealership {from: \"" + locations.get(i) + "\"}),";
+            i++;
+        }
+        query += "d" + i + ":Dealership {from: \"" + locations.get(i) + "\"})";
+
+        return query;
+    }
+    // endregion
+
+    // region Read
+    // endregion
+
+    // region Update
+    // endregion
+
+    // region Delete
+    // endregion
+
     public static String populateDB()
     {
         String query = "";
