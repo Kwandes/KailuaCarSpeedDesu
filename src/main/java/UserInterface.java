@@ -7,7 +7,7 @@
 public class UserInterface
 {
     //region Attributes
-    private static int screenNumber = 1;
+    private static int screenNumber = 98;
     private static boolean programRunning = true;
     private static String quitStatus = "default";
 
@@ -27,7 +27,7 @@ public class UserInterface
     */
     public static String display()
     {
-        screenNumber=98;
+        //screenNumber=98;
         while (programRunning)
         {
             // check for what screen to open next
@@ -88,7 +88,7 @@ public class UserInterface
         // assign next screen depending on the user input
         switch (input)
         {
-            case 1:
+            case 1: //manage
                 screenNumber = 1;
                 break;
             case 2:
@@ -181,7 +181,7 @@ public class UserInterface
         switch (choice)
         {
             case 1:
-                screenNumber = 1;
+                screenNumber = 98;
                 break;
             case 2:
                 screenNumber = 0;

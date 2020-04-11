@@ -20,10 +20,9 @@ public class Queries {
 
         formattedPrint("What would you like to do?");
         formattedPrint(1,"See all open contracts");
-        formattedPrint(2,"See all closed contracts");
-        formattedPrint(3,"Create a new contract");
-        formattedPrint(4,"Generate contract(s)");
-        formattedPrint(5,"Return to main menu");
+        formattedPrint(2,"Create a new contract");
+        formattedPrint(3,"Generate contract(s)");
+        formattedPrint(4,"Return to main menu");
         int selection = ScannerReader.scannerInt(1,5);
         switch(selection)
         {
@@ -32,23 +31,17 @@ public class Queries {
                 formattedPrint("Getting the list of all open contracts");
                 slowScroll(1000, "... ");
                 break;
-            case 2: //see all closed contracts
-                formattedHeader("See all closed contracts");
-                formattedPrint("Getting the list of all closed contracts");
-                slowScroll(1000, "... ");
-                break;
-            case 3: //Create new contract
+            case 2: //Create new contract
                 formattedHeader("Create a new contract");
                 break;
-            case 4: //Generate contract(s)
+            case 3: //Generate contract(s)
                 formattedHeader("Generate contract(s)");
                 formattedPrint("How many contracts would you like to generate?");
                 int contractsToGenerate = ScannerReader.scannerInt();
                 //generateContractsCode here ________________________
                 formattedPrint(contractsToGenerate + " contracts generated.");
                 break;
-            case 5: //main menu JAN
-
+            case 4: //main menu JAN
                 break;
         }
 
@@ -145,16 +138,16 @@ public class Queries {
         switch(choice)
         {
             case 1: //sort Model Name
-
+                formattedHeader("Sort by model name");
                 break;
             case 2: //sort Brand Name
-
+                formattedHeader("Sort by brand name");
                 break;
             case 3: //sort Number of seats
-
+                formattedHeader("Sort by number of seats");
                 break;
             case 4: //sort Availability
-
+                formattedHeader("Sort by Availability");
                 break;
             case 5: //main menu
 

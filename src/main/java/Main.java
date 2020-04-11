@@ -15,10 +15,17 @@ public class Main
             // Run the actual program
             String programClosingStatus = UserInterface.display();
             System.out.println("Program closed with '" + programClosingStatus + "' status");
-            Log.trace("Program closed with '" + programClosingStatus + "' status");
+            Log.trace("Program closed with " + programClosingStatus + " status");
         }
 
         // close the connection to the database
+        try
+        {
+            Thread.sleep(5000);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         DBInteraction.closeConnection();
     }
 }
