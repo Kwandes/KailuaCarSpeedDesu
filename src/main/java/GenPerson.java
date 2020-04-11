@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GenPerson
 {
-    //region text ArrayLists and Random object
+    //region text ArrayLists and Random object for storing possible names and cities
     private ArrayList<String> femaleNames;
     private ArrayList<String> maleNames;
     private ArrayList<String> surnames;
@@ -18,6 +18,7 @@ public class GenPerson
     private Random rand = new Random();
     //endregion
 
+    //Constructor so all the files are loaded for the generation of a person
     public GenPerson()
     {
         femaleNames = loadStringFile("src/txtFiles/femaleNames.txt");
@@ -82,6 +83,8 @@ public class GenPerson
         return address;
     }
 
+    //returns an email with name, surname, numbers and a random
+    //email account (Gmail, hotmail, yahoo etc) ends on .com or .dk
     public String genEmail (String name, String surname )
     {
         String email = "";
@@ -133,7 +136,8 @@ public class GenPerson
         return email;
     }
 
-    //Works for persons drivers lincece nr AND car registration nr
+    //Works for persons drivers lincece nr AND car registration
+    //Simply returns 6 ints and 2 uppercase letters
     public String genDiversLicenceNumber()
     {
         String licenceNr = "";
@@ -159,8 +163,11 @@ public class GenPerson
         return null;
     }
 
+    //returns the string city from the cities arrayList
     public String genCity() { return cities.get( rand.nextInt( 350 ) )[1]; }
 
+    //returns a cpr nr with the birthday of the person and 4 extra
+    //ints that are either odd or even depending on the sex
     public String genCpr(Date birthday, char sex)
     {
         String cprNr = "";
@@ -180,6 +187,7 @@ public class GenPerson
         return cprNr;
     }
 
+    //returns a random danish phone nr with the format "+45 xxxxxxxx"
     public String genPhoneNr()
     {
         String phoneNr = "+45 " + (1 + rand.nextInt(9));
@@ -190,6 +198,7 @@ public class GenPerson
         return phoneNr;
     }
 
+    //returns a phoneNr depending on what country the person comes from.
     public String genPhoneNrEU( String country )
     {
         String phoneNr = "";
@@ -208,11 +217,13 @@ public class GenPerson
         return phoneNr;
     }
 
+    //returns a random surname from the surname list
     public String genSurname()
     {
         return surnames.get( rand.nextInt( surnames.size() ) );
     }
 
+    //returns a name male/female depending on the sex of the person
     public String genName(char sex)
     {
         String name = "";
@@ -225,6 +236,7 @@ public class GenPerson
         return name;
     }
 
+    //returns a char for gender. M/F
     public char genSex()
     {
         char sex = 'M';

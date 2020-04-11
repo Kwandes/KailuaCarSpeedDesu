@@ -23,9 +23,8 @@ public class Queries {
 
 
     //Contact info should be formattet ( Date startDate, Date endDate, int costumerId, int salesmanId, int carId, int maxKm, int startKm ) in a db query string
-    public static void addRental( String contractInfo )
+    public static void addContract( String contractInfo )
     {
-        SimpleDateFormat sdf = new SimpleDateFormat( "dd-MM-yyyy");
         String DBContractInfo = "INSERT INTO Contract( " +
                 "date_signed, end_date, costumer_id, salesman_id, car_id, max_km, start_km, value " +
                 ") VALUES ( " +
