@@ -27,42 +27,33 @@ public class UserInterface
     */
     public static String display()
     {
-        screenNumber = 5;
+        screenNumber=98;
         while (programRunning)
         {
             // check for what screen to open next
 
             switch (screenNumber)
             {
-                case 0:
+                case 0: //quit
                     quit();
                     break;
-                case 1:
-
+                case 1: //Manage Costumers
+                    mainMenu();
                     break;
-                case 2:
+                case 2: //Mange Contracts
                     displayCustomerInfo();
                     break;
-                case 3:
+                case 3: //Manage Employees
                     displayContractInfo();
                     break;
-                case 4:
-                    displayCarInfo();
-                    break;
-                case 5:
-                    Queries.registerCar();
-                    //registerCustomer();
-                    break;
-                case 6:
-                    registerContract();
-                    break;
-                case 7:
-                    Queries.registerCar();
+                case 4: //Manage Cars
+                    Queries.manageCar();
+                    quitOrReturnToMainMenu();
                     break;
                 case 98:
                     mainMenu();
                 default:
-                    mainMenu();
+                    //mainMenu();
                     break;
             }
         }
@@ -84,15 +75,14 @@ public class UserInterface
     private static void mainMenu()
     {
         Queries.formattedHeader("Welcome to Kailua Car Rental");
-        Queries.formattedPrint(1, "Display information about customers");
-        Queries.formattedPrint(2, "Display information about contracts");
-        Queries.formattedPrint(3, "Register a new Customer");
-        Queries.formattedPrint(4, "Create a new Contract");
-        Queries.formattedPrint(5, "Manage cars");
-        Queries.formattedPrint(6, "Quit");
+        Queries.formattedPrint(1, "Manage Costumers");
+        Queries.formattedPrint(2, "Manage Contracts");
+        Queries.formattedPrint(3, "Manage Employees");
+        Queries.formattedPrint(4, "Manage cars");
+        Queries.formattedPrint(5, "Quit");
 
         // get input from user. The method contains input checking
-        int input = ScannerReader.scannerInt(1, 7);
+        int input = ScannerReader.scannerInt(1, 5);
 
         // assign next screen depending on the user input
         switch (input)
@@ -110,13 +100,7 @@ public class UserInterface
                 screenNumber = 4;
                 break;
             case 5:
-                screenNumber = 5;
-                break;
-            case 6:
-                screenNumber = 6;
-                break;
-            case 7:
-                quit();
+                screenNumber = 0;
                 break;
         }
     }
@@ -157,13 +141,9 @@ public class UserInterface
         quitOrReturnToMainMenu();
     }
 
-    // screen number 5
-    private static void registerCustomer()
-    {
-        Queries.formattedHeader("Register Customer");
-        System.out.println("to be implemented!");
-        quitOrReturnToMainMenu();
-    }
+    // screen number 5 (manage cars)
+
+
 
 
     // screen number 6
@@ -190,7 +170,7 @@ public class UserInterface
 
 
     // ask user for input regarding next actions
-    private static void quitOrReturnToMainMenu()
+    public static void quitOrReturnToMainMenu()
     {
         System.out.println("");
         System.out.println("what would you like to do next?");
