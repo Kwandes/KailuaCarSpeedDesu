@@ -45,7 +45,7 @@ public class DBInteraction
     }
 
     // start a connection to the database. Has to be run before the query commands can be used
-    public static void startConnection()
+    public static void openConnection()
     {
         try
         {

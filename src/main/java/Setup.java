@@ -22,6 +22,7 @@ public class Setup
         if (setupConfig())
         {
             setupDB();
+            setupNeo();
             setupSecurity();
             setupLog();
         }
@@ -61,6 +62,14 @@ public class Setup
         DBInteraction.setUserName(config.getProperty("username"));
         DBInteraction.setPassword(config.getProperty("password"));
         DBInteraction.setSchema(config.getProperty("schema"));
+    }
+
+    private static void setupNeo()
+    {
+        Neo4JInteraction.setUri(config.getProperty("uri"));
+        Neo4JInteraction.setPassword(config.getProperty("passWord"));
+        Neo4JInteraction.setUser(config.getProperty("user"));
+        Neo4JInteraction.setDriver();
     }
 
     private static void setupLog()
