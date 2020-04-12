@@ -41,12 +41,12 @@ public class Neo4jQueries
         while ( i < names.size()-1 )
         {
             name = names.get(i).split(";", 2);
-            query += "(s" + i + ":Salesman {first_name: \"" + name[0] + "\", last_name \"" + name[1] + "\"})," +
+            query += "(s" + i + ":Salesman {first_name: \"" + name[0] + "\", last_name: \"" + name[1] + "\"})," +
                      "(s" + i + ")-[:WORKS_AT {sales_made: " + r.nextInt(10) + "}]->(d),";
             i++;
         }
         name = names.get(i).split(";", 2);
-        query += "(s" + i + ":Salesman {first_name: \"" + name[0] + "\", last_name \"" + name[1] + "\"})," +
+        query += "(s" + i + ":Salesman {first_name: \"" + name[0] + "\", last_name: \"" + name[1] + "\"})," +
                 "(s" + i + ")-[:WORKS_AT {sales_made: " + r.nextInt(10) + "}]->(d)";
 
         return query;
@@ -64,12 +64,12 @@ public class Neo4jQueries
         while ( i < carDetails.size()-1 )
         {
             car = carDetails.get(i).split(";", 3);
-            query += "(c" + i + ":Car {brand: \"" + car[0] + "\", model \"" + car[1] + "\", year: \"" + car[2] + "\"})," +
+            query += "(c" + i + ":Car {brand: \"" + car[0] + "\", model: \"" + car[1] + "\", year: \"" + car[2] + "\"})," +
                     "(d)-[:HAS {since: " + (r.nextInt(20) + 2000) + "}]->(c" + i + "),";
             i++;
         }
         car = carDetails.get(i).split(";", 3);
-        query += "(c" + i + ":Car {brand: \"" + car[0] + "\", model \"" + car[1] + "\", year: \"" + car[2] + "\"})," +
+        query += "(c" + i + ":Car {brand: \"" + car[0] + "\", model: \"" + car[1] + "\", year: \"" + car[2] + "\"})," +
                 "(d)-[:HAS {since: " + (car[2] + r.nextInt(5)) + "}]->(c" + i + ")";
 
         return query;
@@ -87,11 +87,11 @@ public class Neo4jQueries
         while ( i < names.size()-1 )
         {
             name = names.get(i).split(";", 2);
-            query += "(c" + i + ":Customer {first_name: \"" + name[0] + "\", last_name \"" + name[1] + "\", from: \"" + locations.get(r.nextInt(locations.size())) + "\"}),";
+            query += "(c" + i + ":Customer {first_name: \"" + name[0] + "\", last_name: \"" + name[1] + "\", from: \"" + locations.get(r.nextInt(locations.size())) + "\"}),";
             i++;
         }
         name = names.get(i).split(";", 2);
-        query += "(c" + i + ":Customer {first_name: \"" + name[0] + "\", last_name \"" + name[1] + "\", from: \"" + locations.get(r.nextInt(locations.size())) + "\"}),";
+        query += "(c" + i + ":Customer {first_name: \"" + name[0] + "\", last_name: \"" + name[1] + "\", from: \"" + locations.get(r.nextInt(locations.size())) + "\"})";
 
         return query;
     }
@@ -106,7 +106,7 @@ public class Neo4jQueries
         Date date = new Date();
         String query = "MATCH (cus:Customer) WHERE cus.first_name = \"" + customer[0] + "\" AND cus.last_name = \"" + customer[1] + "\"\n" +
                        "MATCH (sal:Salesman) WHERE sal.first_name = \"" + salesman[0] + "\" AND sal.last_name = \"" + salesman[1] + "\"\n" +
-                       "MATCH (car:Car) car.brand = \"" + car[0] + "\" AND car.model = \"" + car[1] + "\" AND car.year = \"" + car[2] + "\"\n" +
+                       "MATCH (car:Car) WHERE car.brand = \"" + car[0] + "\" AND car.model = \"" + car[1] + "\" AND car.year = \"" + car[2] + "\"\n" +
                        "CREATE (con:Contract {date_signed: \"" + dateFormat.format(date) + "\", value: \"" + value + "\"})," +
                        "(cus)-[:SIGNED]->(con)," +
                        "(sal)-[:SEALED]->(con)," +
