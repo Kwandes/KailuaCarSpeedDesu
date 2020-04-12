@@ -39,6 +39,7 @@ public class UserInterface
                     break;
                 case 1: //Manage Costumers
                     //mainMenu();
+                    quitOrReturnToMainMenu();
                     break;
                 case 2: //Mange Contracts
                     Queries.manageContracts();
@@ -46,6 +47,7 @@ public class UserInterface
                     break;
                 case 3: //Manage Employees
                     displayContractInfo();
+                    quitOrReturnToMainMenu();
                     break;
                 case 4: //Manage Cars
                     Queries.manageCar();

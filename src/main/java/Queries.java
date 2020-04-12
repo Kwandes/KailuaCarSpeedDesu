@@ -35,7 +35,7 @@ public class Queries {
             case 1: //see all open contracts
                 formattedHeader("See all open contracts");
                 formattedPrint("Getting the list of all open contracts");
-                slowScroll(100, "... ");
+                slowScroll(500, "... ");
                 ResultSet rs = DBInteraction.getData("SELECT * FROM contract;");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat sdtf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -412,7 +412,7 @@ public class Queries {
         formattedPrint("Generating registry date of car based on current time");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String reg_date = sdf.format(new Date());
-        slowScroll(1000, "... ");//the date we acquire it
+        slowScroll(500, "... ");//the date we acquire it
         System.out.println("Registry date is: " + reg_date);
 
         formattedPrint("Please type the current kilometers on the dial of the car"); //default is 0
@@ -634,38 +634,40 @@ public class Queries {
         System.out.print("\tSelect : ");
         int editChoice = ScannerReader.scannerInt(1,5);
         String text = "";
+        int success;
         switch(editChoice)
         {
             case 1:
                 formattedHeader("Change plate number");
                 formattedPrint("What would you like to change the plate number to?");
                 String plate_number_TEMP = ScannerReader.scannerWords();
-                //query gen here
+                success = DBInteraction.updateData("UPDATE car SET plate_number = '"+ plate_number_TEMP + "' WHERE car_id = "+ carId +";");
+                successCheck(success);
                 //send query here
                 break;
             case 2:
                 formattedHeader("Change specification");
                 formattedPrint("What would you like to change the specification to?");
                 String specification_TEMP = ScannerReader.scannerWords(); //LIMITED TO ONE SINGLE WORD INPUT
-                //query gen here
+                success = DBInteraction.updateData("UPDATE car SET other_specifications = '"+ specification_TEMP + "' WHERE car_id = "+ carId +";");
+                successCheck(success);
                 //send query here
                 break;
             case 3:
                 formattedHeader("Change seats");
                 formattedPrint("How many seats does the car now have?");
                 int seats_TEMP = ScannerReader.scannerInt(2,9);
-                //query gen here
-                //send query here
+                success = DBInteraction.updateData("UPDATE car SET seats = '"+ seats_TEMP + "' WHERE car_id = "+ carId +";");
+                successCheck(success);
                 break;
             case 4:
                 formattedPrint("Do you want to close the contract ID or change it?");
                 formattedPrint(1,"Change it");
                 formattedPrint(2,"Close it");
-                slowScroll(1000,"Dweit");
+                slowScroll(500,"Dweit");
                 Queries.printLines();
                 System.out.print("\tSelect : ");
                 int choices = ScannerReader.scannerInt(1,2);
-                int success;
                 switch (choices)
                 {
                     case 1:
@@ -673,28 +675,12 @@ public class Queries {
                         formattedPrint("What do you want to change the ID to?");
                         int contract_id_TEMP = ScannerReader.scannerInt();
                         success = DBInteraction.updateData("UPDATE car SET contract_id = "+ contract_id_TEMP + ", available = 0 WHERE car_id = "+ carId +";");
-                        if (success >= 1)
-                        {
-                            formattedPrint("Updating database");
-                            slowScroll(500, "... ");
-                            formattedPrint("Update successful");
-                        } else
-                        {
-                            formattedPrint("Something went wrong, database is unchanged");
-                        }
+                        successCheck(success);
                         break;
                     case 2:
                         formattedHeader("Close the contract");
                         success = DBInteraction.updateData("UPDATE car SET contract_id = NULL , available = 1 WHERE car_id = "+ carId +";");
-                        if (success >= 1)
-                        {
-                            formattedPrint("Updating database");
-                            slowScroll(500, "... ");
-                            formattedPrint("Update successful");
-                        } else
-                        {
-                            formattedPrint("Something went wrong, database is unchanged");
-                        }
+                        successCheck(success);
                         break;
                 }
                 break;
@@ -741,6 +727,19 @@ public class Queries {
     //endregion Menu methods
 
     //region System.out.print Methods
+    public static void successCheck(int success)
+    {
+        if (success >= 1)
+        {
+            formattedPrint("Updating database");
+            slowScroll(500, "... ");
+            formattedPrint("Update successful");
+        } else
+        {
+            formattedPrint("Something went wrong, database is unchanged");
+        }
+    }
+
     public static void formattedPrint(String text)
     {
         System.out.printf("%-2s%-"+ (headerLinesCount-3)+"s%s%n", art, text, art);
