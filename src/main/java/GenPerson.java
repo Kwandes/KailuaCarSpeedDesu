@@ -173,7 +173,7 @@ public class GenPerson
         String cprNr = "";
         int cprRest = 1000 + rand.nextInt( 9000 );
         DateFormat dtf = new SimpleDateFormat("ddMMyy");
-        cprNr += dtf.format( birthday ) + "-";
+        cprNr += dtf.format( birthday );
         if (sex == 'M')
         {
             if (cprRest % 2 == 0) { cprRest -= 1; }

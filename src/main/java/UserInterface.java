@@ -76,10 +76,10 @@ public class UserInterface
     private static void mainMenu()
     {
         Queries.formattedHeader("Welcome to Kailua Car Rental");
-        Queries.formattedPrint(1, "Manage Costumers");
+        Queries.formattedPrint(1, "Manage Customers");
         Queries.formattedPrint(2, "Manage Contracts");
         Queries.formattedPrint(3, "Manage Employees");
-        Queries.formattedPrint(4, "Manage cars");
+        Queries.formattedPrint(4, "Manage Cars");
         Queries.formattedPrint(5, "Quit");
         System.out.println();
         Queries.printLines();
