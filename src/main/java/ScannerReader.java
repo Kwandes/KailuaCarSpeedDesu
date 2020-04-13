@@ -157,7 +157,7 @@ public class ScannerReader {
                 if (endDate.after(minDate)) {
                     validDate = true;
                 } else {
-                    System.out.println("Date must be after the start date.");
+                    System.out.println("Date must be after " + minDate.toString() + ".");
                 }
 
             }
