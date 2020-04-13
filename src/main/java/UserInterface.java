@@ -46,7 +46,8 @@ public class UserInterface
                     quitOrReturnToMainMenu();
                     break;
                 case 3: //Manage Employees
-                    displayContractInfo();
+                    Queries.manageEmployee();
+                    //displayContractInfo();
                     quitOrReturnToMainMenu();
                     break;
                 case 4: //Manage Cars

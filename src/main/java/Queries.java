@@ -4,7 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Random;
 
 public class Queries {
@@ -209,7 +211,7 @@ public class Queries {
         Date startDate = ScannerReader.scannerDate( new Date() );
         contractStartDate = sdtf.format( startDate );
 
-            System.out.println(contractEndDate);
+        System.out.println(contractEndDate);
 
         //get end date (after start of contract date
         formattedPrint("Please type the desired end date of the contract");
@@ -609,12 +611,12 @@ public class Queries {
         ResultSet cars = DBInteraction.getData(carQuery);
         try
         {
-             cars.absolute(0);
-             cars.next();
-             int firstRowId = cars.getInt("car_id");
-             //moves to the last row in the cars list so i know the largest id in the DB
-             cars.last();
-             int lastRowId = cars.getInt("car_id");
+            cars.absolute(0);
+            cars.next();
+            int firstRowId = cars.getInt("car_id");
+            //moves to the last row in the cars list so i know the largest id in the DB
+            cars.last();
+            int lastRowId = cars.getInt("car_id");
              System.out.println();
              Queries.printLines();
              System.out.print("\tSelect from " + firstRowId + " - " + lastRowId + " : ");
@@ -724,6 +726,210 @@ public class Queries {
         }
     }
     //endregion Manage Car
+
+    //region manageEmployee
+
+    // Create, read and remove salesman from the DB
+    // Handles all the prinouts, input and logic related to CRUD of employee
+    public static void manageEmployee()
+    {
+        formattedHeader("Manage Employees");
+        formattedPrint("What would you like to do?");
+        formattedPrint(1, "See all Employees");
+        formattedPrint(2, "Register a new Employee");
+        formattedPrint(3, "Remove an Employee");
+        formattedPrint(4, "Return to main menu");
+
+        System.out.println();
+        Queries.printLines();
+
+        System.out.print("\tSelect : ");
+        int selection = ScannerReader.scannerInt(1, 4);
+        // choose which action to perform
+        switch (selection)
+        {
+            case 1: //see all existing salesman
+                formattedHeader("See all employees");
+                // Decide the data presentation order
+                formattedPrint("How would you like to order the list:");
+                formattedPrint(1, "by last name, Ascending");
+                formattedPrint(2, "by last name, Descending");
+                String dataOrder = ";";
+                switch(ScannerReader.scannerInt(1,2))
+                {
+                    case 1:
+                        dataOrder = " ORDER BY last_name ASC";
+                        break;
+                    case 2:
+                        dataOrder = " ORDER BY last_name DESC";
+                        break;
+                }
+
+                // Get and display salesman information
+                formattedPrint("Getting the list of all employees");
+                slowScroll(500, "... ");
+                ResultSet rs = DBInteraction.getData("SELECT * FROM salesman" + dataOrder);
+                Log.trace("User has retrieved salesman information");
+                try
+                {
+                    System.out.printf("%-11s | %-20s| %-20s | %-15s |\n", "Salesman ID", "First Name", "Last Name", "CPR");
+                    printLines();
+                    while (rs.next()) // salesman_id, first_name, last_name, cpr
+                    {
+                        System.out.printf("%-11s | %-20s| %-20s | %-15s |\n",
+                                rs.getString("salesman_id"),
+                                rs.getString("first_name"),
+                                rs.getString("last_name"),
+                                rs.getString("cpr"));
+                    }
+                } catch (SQLException | NullPointerException e)
+                {
+                    e.printStackTrace();
+                    Log.warning("An issue has occurred while displaying employee information", e);
+                }
+                break;
+
+            case 2: // Register a new salesman
+                formattedHeader("Register a new Employee");
+                // get a creationQuery from a method that handles data generation/ user input
+                String newEmployeeQuery = createEmployeeQuery();
+                // if returned query is null (for example, user has aborted registration), break out
+                if (newEmployeeQuery.equals("")) break;
+
+                // send the query to the DB
+                int result = DBInteraction.updateData(newEmployeeQuery);
+                if (result == -1) formattedPrint("Failed to create a new employee, contact Administrator for help");
+                else
+                {
+                    formattedPrint("New employee has been added");
+                    Log.info("New employee has been added");
+                }
+                break;
+
+            case 3: // Remove an existing salesman
+                formattedHeader("Remove an employee");
+                formattedPrint("What is the id/cpr of the employee you wish to remove?");
+                // search for a specific employee
+                String employeeIdentifier = ScannerReader.scannerAll();
+                String searchQuery = "SELECT * FROM salesman WHERE salesman_id LIKE '%" + employeeIdentifier + "%' OR cpr LIKE '%" + employeeIdentifier + "%';";
+
+                // check the results for salesman
+                ResultSet foundSalesman = DBInteraction.getData(searchQuery);
+                int resultCount = 0;
+                String name = "N/A";
+                Log.trace("User has retrieved salesman information");
+                try
+                {
+                    System.out.printf("%-11s | %-20s| %-20s | %-15s |\n", "Salesman ID", "First Name", "Last Name", "CPR");
+                    printLines();
+                    while (foundSalesman.next()) // salesman_id, first_name, last_name, cpr
+                    {
+                        System.out.printf("%-11s | %-20s| %-20s | %-15s |\n",
+                                foundSalesman.getString("salesman_id"),
+                                foundSalesman.getString("first_name"),
+                                foundSalesman.getString("last_name"),
+                                foundSalesman.getString("cpr"));
+                        name = foundSalesman.getString("first_name") + " " + foundSalesman.getString("last_name");
+                        resultCount++;
+                    }
+                } catch (SQLException | NullPointerException e)
+                {
+                    if (resultCount == 0)
+                    formattedPrint("No employee found");
+                    e.printStackTrace();
+                    Log.warning("An issue has occurred while displaying employee information", e);
+                }
+                if (resultCount == 0)
+                    formattedPrint("No employee found");
+                else if (resultCount > 1)
+                    // For simplicity, if the search is unsuccessful, you return to the main menu instead of having the entire thing in a while loop
+                    formattedPrint("More than 1 employee found, aborting");
+                else
+                {
+                    formattedPrint("Would you like to delete " + name);
+                    formattedPrint(1, "yes");
+                    formattedPrint(2, "no");
+                    int choice = ScannerReader.scannerInt(1,2);
+                    if(choice == 1)
+                    {
+                        Log.info("Removing salesman " + name);
+                        String removalQuery = "DELETE FROM salesman WHERE salesman_id LIKE '%" + employeeIdentifier + "%' OR cpr LIKE '%" + employeeIdentifier + "%';";
+                        DBInteraction.updateData(removalQuery);
+                    }
+                    else Log.trace("Removal of " + name + " has been aborted");
+                }
+                break;
+            case 4: // Return to the main menu
+                break;
+        }
+
+    }
+
+    // returns a complete query for creating a salesman
+    // salesman data is obtained from user input OR auto-generated
+    private static String createEmployeeQuery()
+    {
+        String query = "";
+
+        formattedPrint("Do you wish to manually register a salesman or auto-generate them?");
+        System.out.println();
+        formattedPrint("[1] manually register");
+        formattedPrint("[2] auto-generate");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
+        int choice = ScannerReader.scannerInt(1, 2);
+
+        // prepare variables for handling input/ data generation
+        String firstName = "Bob";
+        String lastName = "Stronk";
+        char sex = 'f'; // used for generation of cpr. Default is f, for female
+        String cpr = "";
+
+        // get data based on the method chosen by the user
+        switch (choice)
+        {
+            case 1: // manually gather all the data from user
+                formattedPrint("What is the employees' first name?");
+                firstName = ScannerReader.scannerWords();
+                formattedPrint("What is the employees' Last name?");
+                lastName = ScannerReader.scannerWords();
+
+                // get birth date for the CPR
+                formattedPrint("What is the employees' birthdate?");
+                // stop using deprecated classes!
+                Date deprecatedDate = new GregorianCalendar(1901, 1, 1).getTime();
+                Date birthDate = ScannerReader.scannerDate(deprecatedDate);
+                sex = ((new Random().nextInt(1) == 1) ? 'f' : 'm'); // randomly assign salesman's sex
+                cpr = GenPerson.genCpr(birthDate, sex);
+                break;
+
+            case 2: // auto-generate all the data using Teo's generation classes
+                sex = ((new Random().nextInt(1) == 1) ? 'f' : 'm'); // randomly assign salesman's sex
+                firstName = GenPerson.genName(sex);
+                lastName = GenPerson.genSurname();
+                cpr = GenPerson.genCpr(sex);
+                break;
+        }
+        // create a creation query based on the input/generated data
+        query = "INSERT INTO salesman(first_name, last_name, cpr) VALUES ('" + firstName + "', '" + lastName + "', '" + cpr + "');";
+        Log.trace("New salesman has been created (but not uploaded yet): " + firstName + " " + lastName + " - " + cpr);
+
+        // Confirm new employee information
+        formattedPrint("New salesman will be added: " + firstName + " " + lastName + " - " + cpr);
+        formattedPrint(1, "Add");
+        formattedPrint(2, "Abort");
+
+        choice = ScannerReader.scannerInt(1, 2);
+        if (choice == 1) return query;
+        else
+        {
+            Log.trace("User has aborted addition of " + firstName + " " + lastName);
+            return "";
+        }
+    }
+    //endregion
+
     //endregion Menu methods
 
     //region System.out.print Methods
