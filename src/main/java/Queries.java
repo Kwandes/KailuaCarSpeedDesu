@@ -987,7 +987,7 @@ public class Queries {
                                 rs.getString("cpr"),
                                 rs.getString("city"),
                                 rs.getString("zip"),
-                                rs.getString("email"));
+                                Security.decryptData(rs.getString("email")));
                     }
                 } catch (SQLException | NullPointerException e)
                 {
@@ -1038,7 +1038,7 @@ public class Queries {
                                 foundCustomer.getString("cpr"),
                                 foundCustomer.getString("city"),
                                 foundCustomer.getString("zip"),
-                                foundCustomer.getString("email"));
+                                Security.decryptData(foundCustomer.getString("email")));
                         name = foundCustomer.getString("first_name") + " " + foundCustomer.getString("last_name");
                         resultCount++;
                     }
@@ -1111,6 +1111,12 @@ public class Queries {
         matcher.find();
         String customerData = matcher.group(1) + " " + matcher.group(2) + " - " + matcher.group(3);
 
+        // get and encrypt the email
+        pattern = Pattern.compile("'(\\w+@\\w+\\.\\w+)'");
+        matcher = pattern.matcher(query);
+        matcher.find();
+
+        query = query.replaceAll("'(\\w+@\\w+\\.\\w+)'", "'" + Security.encryptData(matcher.group(1)) + "'");
         Log.trace("New customer has been created (but not uploaded yet): " + customerData);
 
         // Confirm new customer information
