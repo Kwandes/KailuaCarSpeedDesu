@@ -23,6 +23,7 @@ public class Setup
             setupNeo();
             setupSecurity();
             setupLog();
+            setupGen();
             return true;
         }
         return false;
@@ -76,5 +77,10 @@ public class Setup
     private static void setupLog()
     {
         Log.setUserName(config.getProperty("username"));
+    }
+
+    private static void setupGen()
+    {
+        GenPerson.setupGenPerson();
     }
 }

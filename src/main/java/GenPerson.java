@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -10,16 +11,16 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GenPerson
 {
     //region text ArrayLists and Random object for storing possible names and cities
-    private ArrayList<String> femaleNames;
-    private ArrayList<String> maleNames;
-    private ArrayList<String> surnames;
-    private ArrayList<String[]> countries;
-    private ArrayList<String[]> cities;
-    private Random rand = new Random();
+    private static ArrayList<String> femaleNames;
+    private static ArrayList<String> maleNames;
+    private static ArrayList<String> surnames;
+    private static ArrayList<String[]> countries;
+    private static ArrayList<String[]> cities;
+    private static Random rand = new Random();
     //endregion
 
     //Constructor so all the files are loaded for the generation of a person
-    public GenPerson()
+    public static void setupGenPerson()
     {
         femaleNames = loadStringFile("src/txtFiles/femaleNames.txt");
         maleNames = loadStringFile("src/txtFiles/maleNames.txt");
@@ -31,7 +32,7 @@ public class GenPerson
     //MAIN METHOD
     //Generates all the info of a customer in a string format made for an SQL Query update
     //Only works with the 'addPerson' method in Queries.
-    public String returnCustomer()
+    public static String returnCustomer()
     {
         char sex = genSex();
         String firstName = genName( sex );
@@ -52,7 +53,7 @@ public class GenPerson
     }
 
     //SINGLE ATTRIBUTE RETURN METHODS
-    public String genAddress( String city )
+    public static String genAddress( String city )
     {
         String address = "";
         if (rand.nextBoolean())
@@ -85,7 +86,7 @@ public class GenPerson
 
     //returns an email with name, surname, numbers and a random
     //email account (Gmail, hotmail, yahoo etc) ends on .com or .dk
-    public String genEmail (String name, String surname )
+    public static String genEmail (String name, String surname )
     {
         String email = "";
         if (rand.nextBoolean())
@@ -138,7 +139,7 @@ public class GenPerson
 
     //Works for persons drivers lincece nr AND car registration
     //Simply returns 6 ints and 2 uppercase letters
-    public String genDiversLicenceNumber()
+    public static String genDiversLicenceNumber()
     {
         String licenceNr = "";
         for (int i = 0; i < 6; i++ )
@@ -152,7 +153,7 @@ public class GenPerson
         return licenceNr;
     }
 
-    public String genZip (String city)
+    public static String genZip (String city)
     {
         for (String[] cityInfo : cities ) {
             if ( cityInfo[1].equals( city ))
@@ -164,11 +165,11 @@ public class GenPerson
     }
 
     //returns the string city from the cities arrayList
-    public String genCity() { return cities.get( rand.nextInt( 350 ) )[1]; }
+    public static String genCity() { return cities.get( rand.nextInt( 350 ) )[1]; }
 
     //returns a cpr nr with the birthday of the person and 4 extra
     //ints that are either odd or even depending on the sex
-    public String genCpr(Date birthday, char sex)
+    public static String genCpr(Date birthday, char sex)
     {
         String cprNr = "";
         int cprRest = 1000 + rand.nextInt( 9000 );
@@ -187,8 +188,13 @@ public class GenPerson
         return cprNr;
     }
 
+    public static String genCpr(char sex)
+    {
+        return genCpr(GenDate.genBirthday(), sex);
+    }
+
     //returns a random danish phone nr with the format "+45 xxxxxxxx"
-    public String genPhoneNr()
+    public static String genPhoneNr()
     {
         String phoneNr = "+45 " + (1 + rand.nextInt(9));
         for (int i = 0; i < 7; i++ )
@@ -199,7 +205,7 @@ public class GenPerson
     }
 
     //returns a phoneNr depending on what country the person comes from.
-    public String genPhoneNrEU( String country )
+    public static String genPhoneNrEU( String country )
     {
         String phoneNr = "";
         for (String[] countryName : countries)
@@ -218,13 +224,13 @@ public class GenPerson
     }
 
     //returns a random surname from the surname list
-    public String genSurname()
+    public static String genSurname()
     {
         return surnames.get( rand.nextInt( surnames.size() ) );
     }
 
     //returns a name male/female depending on the sex of the person
-    public String genName(char sex)
+    public static String genName(char sex)
     {
         String name = "";
         int nameNr = rand.nextInt( maleNames.size() );
@@ -237,7 +243,7 @@ public class GenPerson
     }
 
     //returns a char for gender. M/F
-    public char genSex()
+    public static char genSex()
     {
         char sex = 'M';
         if (rand.nextBoolean())
@@ -248,7 +254,7 @@ public class GenPerson
     }
 
     //region LOAD NAME FILES
-    private ArrayList<String> loadStringFile(String file)
+    private static ArrayList<String> loadStringFile(String file)
     {
         ArrayList<String> fileInfo = new ArrayList<>();
         Scanner fileReader = new Scanner("");
@@ -265,7 +271,7 @@ public class GenPerson
         return fileInfo;
     }
 
-    private ArrayList<String[]> loadCountries()
+    private static ArrayList<String[]> loadCountries()
     {
         ArrayList<String[]> countries = new ArrayList<>();
         Scanner countryFile = new Scanner("");
@@ -283,7 +289,7 @@ public class GenPerson
         return countries;
     }
 
-    private ArrayList<String[]> loadCities()
+    private static ArrayList<String[]> loadCities()
     {
         ArrayList<String[]> countries = new ArrayList<>();
         Scanner cityFile = new Scanner("");
@@ -303,7 +309,7 @@ public class GenPerson
         return countries;
     }
 
-    public String readFile (String fileName)
+    public static String readFile (String fileName)
     {
         //absoluteFilePath = workingDirectory + System.getProperty("file.separator") + filename;
         return System.getProperty("user.dir") + File.separator + fileName;
