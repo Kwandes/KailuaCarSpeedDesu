@@ -187,8 +187,7 @@ public class Queries {
             System.out.println("Register a new one your self man!");   //DO WE WANT TO MAKE THE REGISTER CUSTOMER METHOD?!?!?!
 
             //Auto gens a customer for you
-            GenPerson genPerson = new GenPerson();
-            String personInfo = genPerson.returnCustomer();
+            String personInfo = GenPerson.returnCustomer();
             addPerson( personInfo );
             String personQuery = "SELECT * FROM customer;";
             //get id of the customer that was just created
