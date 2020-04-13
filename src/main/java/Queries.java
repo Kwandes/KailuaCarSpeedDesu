@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Queries {
 
@@ -924,6 +926,203 @@ public class Queries {
         else
         {
             Log.trace("User has aborted addition of " + firstName + " " + lastName);
+            return "";
+        }
+    }
+    //endregion
+
+    //region manageCustomer
+
+    // Create, read and remove salesman from the DB
+    // Handles all the prinouts, input and logic related to CRUD of employee
+    public static void manageCustomer()
+    {
+        formattedHeader("Manage Customer");
+        formattedPrint("What would you like to do?");
+        formattedPrint(1, "See all Customers");
+        formattedPrint(2, "Register a new Customer");
+        formattedPrint(3, "Remove a Customer");
+        formattedPrint(4, "Return to main menu");
+
+        System.out.println();
+        Queries.printLines();
+
+        System.out.print("\tSelect : ");
+        int selection = ScannerReader.scannerInt(1, 4);
+        // choose which action to perform
+        switch (selection)
+        {
+            case 1: //see all existing salesman
+                formattedHeader("See all Customers");
+                // Decide the data presentation order
+                formattedPrint("How would you like to order the list:");
+                formattedPrint(1, "by last name, Ascending");
+                formattedPrint(2, "by last name, Descending");
+                String dataOrder = ";";
+                switch(ScannerReader.scannerInt(1,2))
+                {
+                    case 1:
+                        dataOrder = " ORDER BY last_name ASC";
+                        break;
+                    case 2:
+                        dataOrder = " ORDER BY last_name DESC";
+                        break;
+                }
+
+                // Get and display salesman information
+                formattedPrint("Getting the list of all Customers");
+                slowScroll(500, "... ");
+                ResultSet rs = DBInteraction.getData("SELECT * FROM customer" + dataOrder);
+                Log.trace("User has retrieved customer information");
+                try
+                {
+                    System.out.printf("%-11s | %-15s| %-20s | %-15s | %-15s | %-5s | %-26s |\n", "Customer ID", "First Name", "Last Name", "CPR", "City", "Zip", "Email");
+                    printLines();
+                    while (rs.next()) // salesman_id, first_name, last_name, cpr, city, email
+                    {
+                        System.out.printf("%-11s | %-15s| %-20s | %-15s | %-15s | %-5s | %-26s |\n",
+                                rs.getString("customer_id"),
+                                rs.getString("first_name"),
+                                rs.getString("last_name"),
+                                rs.getString("cpr"),
+                                rs.getString("city"),
+                                rs.getString("zip"),
+                                rs.getString("email"));
+                    }
+                } catch (SQLException | NullPointerException e)
+                {
+                    e.printStackTrace();
+                    Log.warning("An issue has occurred while displaying customer information", e);
+                }
+                break;
+
+            case 2: // Register a new Customer
+                formattedHeader("Register a new Customer");
+                // get a creationQuery from a method that handles data generation/ user input
+                String newCustomerQuery = createCustomerQuery();
+                // if returned query is null (for example, user has aborted registration), break out
+                if (newCustomerQuery.equals("")) break;
+                System.out.println(newCustomerQuery);
+                // send the query to the DB
+                int result = DBInteraction.updateData(newCustomerQuery);
+                if (result == -1) formattedPrint("Failed to create a new customer, contact Administrator for help");
+                else
+                {
+                    formattedPrint("New customer has been added");
+                    Log.info("New customer has been added");
+                }
+                break;
+
+            case 3: // Remove an existing customer
+                formattedHeader("Remove a Customer");
+                formattedPrint("What is the id/cpr of the customer you wish to remove?");
+                // search for a specific employee
+                String customerIdentifier = ScannerReader.scannerAll();
+                String searchQuery = "SELECT * FROM customer WHERE customer_id LIKE '%" + customerIdentifier + "%' OR cpr LIKE '%" + customerIdentifier + "%';";
+
+                // check the results for customer
+                ResultSet foundCustomer = DBInteraction.getData(searchQuery);
+                int resultCount = 0;
+                String name = "N/A";
+                Log.trace("User has retrieved customer information");
+                try
+                {
+                    System.out.printf("%-11s | %-15s| %-20s | %-15s | %-15s | %-5s | %-26s |\n", "Customer ID", "First Name", "Last Name", "CPR", "City", "Zip", "Email");
+                    printLines();
+                    while (foundCustomer.next()) // salesman_id, first_name, last_name, cpr, city, email
+                    {
+                        System.out.printf("%-11s | %-15s| %-20s | %-15s | %-15s | %-5s | %-26s |\n",
+                                foundCustomer.getString("customer_id"),
+                                foundCustomer.getString("first_name"),
+                                foundCustomer.getString("last_name"),
+                                foundCustomer.getString("cpr"),
+                                foundCustomer.getString("city"),
+                                foundCustomer.getString("zip"),
+                                foundCustomer.getString("email"));
+                        name = foundCustomer.getString("first_name") + " " + foundCustomer.getString("last_name");
+                        resultCount++;
+                    }
+                } catch (SQLException | NullPointerException e)
+                {
+                    if (resultCount == 0)
+                        formattedPrint("No customer found");
+                    e.printStackTrace();
+                    Log.warning("An issue has occurred while displaying customer information", e);
+                }
+                if (resultCount == 0)
+                    formattedPrint("No customer found");
+                else if (resultCount > 1)
+                    // For simplicity, if the search is unsuccessful, you return to the main menu instead of having the entire thing in a while loop
+                    formattedPrint("More than 1 customer found, aborting");
+                else
+                {
+                    formattedPrint("Would you like to delete " + name);
+                    formattedPrint(1, "yes");
+                    formattedPrint(2, "no");
+                    int choice = ScannerReader.scannerInt(1,2);
+                    if(choice == 1)
+                    {
+                        Log.info("Removing customer " + name);
+                        String removalQuery = "DELETE FROM customer WHERE customer_id LIKE '%" + customerIdentifier + "%' OR cpr LIKE '%" + customerIdentifier + "%';";
+                        DBInteraction.updateData(removalQuery);
+                    }
+                    else Log.trace("Removal of " + name + " has been aborted");
+                }
+                break;
+            case 4: // Return to the main menu
+                break;
+        }
+
+    }
+
+    // returns a complete query for creating a customer
+    // customer data is obtained from user input OR auto-generated
+    private static String createCustomerQuery()
+    {
+        String query = "";
+
+        formattedPrint("Do you wish to manually register a customer or auto-generate them?");
+        System.out.println();
+        formattedPrint("[1] manually register");
+        formattedPrint("[2] auto-generate");
+        System.out.println();
+        Queries.printLines();
+        System.out.print("\tSelect : ");
+        int choice = ScannerReader.scannerInt(1, 2);
+
+        // get data based on the method chosen by the user
+        switch (choice)
+        {
+            case 1: // manually gather all the data from user
+                formattedPrint("Due to performance and value of time, we have auto generated a user for you.");
+                //formattedPrint(GenPerson.returnCustomer());
+                break;
+
+            case 2: // auto-generate all the data using Teo's generation classes
+                break;
+        }
+        // create a creation query based on the input/generated data
+        query = "INSERT INTO customer(first_name, last_name, cpr, zip, city, address, phone_number, email, driver_license_number, driver_since_date)" +
+                " VALUES (" + GenPerson.returnCustomer() + ");";
+
+        // extract first name, last name and CPR from the query using regex
+        Pattern pattern = Pattern.compile( "VALUES\\s\\('(\\w+)',\\s'(\\w+)',\\s'(\\w+)'");
+        Matcher matcher = pattern.matcher(query);
+        matcher.find();
+        String customerData = matcher.group(1) + " " + matcher.group(2) + " - " + matcher.group(3);
+
+        Log.trace("New customer has been created (but not uploaded yet): " + customerData);
+
+        // Confirm new customer information
+        formattedPrint("New customer will be added: " + customerData);
+        formattedPrint(1, "Add");
+        formattedPrint(2, "Abort");
+
+        choice = ScannerReader.scannerInt(1, 2);
+        if (choice == 1) return query;
+        else
+        {
+            Log.trace("User has aborted addition of " + customerData);
             return "";
         }
     }

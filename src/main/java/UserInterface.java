@@ -54,6 +54,10 @@ public class UserInterface
                     Queries.manageCar();
                     quitOrReturnToMainMenu();
                     break;
+                case 5:
+                    Queries.manageCustomer();
+                    quitOrReturnToMainMenu();
+                    break;
                 case 98:
                     mainMenu();
                 default:
@@ -83,12 +87,13 @@ public class UserInterface
         Queries.formattedPrint(2, "Manage Contracts");
         Queries.formattedPrint(3, "Manage Employees");
         Queries.formattedPrint(4, "Manage Cars");
-        Queries.formattedPrint(5, "Quit");
+        Queries.formattedPrint(5, "Manage Customers");
+        Queries.formattedPrint(6, "Quit");
         System.out.println();
         Queries.printLines();
         System.out.print("\tSelect : ");
         // get input from user. The method contains input checking
-        int input = ScannerReader.scannerInt(1, 5);
+        int input = ScannerReader.scannerInt(1, 6);
 
         // assign next screen depending on the user input
         switch (input)
@@ -106,6 +111,9 @@ public class UserInterface
                 screenNumber = 4;
                 break;
             case 5:
+                screenNumber = 5;
+                break;
+            case 6:
                 screenNumber = 0;
                 break;
         }
