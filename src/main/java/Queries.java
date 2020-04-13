@@ -185,8 +185,8 @@ public class Queries {
         }
         else
         {
-            //fuck that shit
-            System.out.println("Register a new one your self man!");   //DO WE WANT TO MAKE THE REGISTER CUSTOMER METHOD?!?!?!
+            // [removed}
+            System.out.println("Register a new one yourself");
 
             //Auto gens a customer for you
             String personInfo = GenPerson.returnCustomer();

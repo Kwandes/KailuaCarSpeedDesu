@@ -121,7 +121,8 @@ public class GenPerson
                     }
                     else
                     {
-                        email += "gmail";  //Because fuck gmail....
+                        email += "gmail";  //Because [redacted] gmail....
+                        // Jan: ignore him, gmail is superior
                     }
                 }
             }
