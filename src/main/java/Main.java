@@ -1,3 +1,7 @@
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main
 {
     public static void main(String[] args)
@@ -10,15 +14,31 @@ public class Main
         else
         {
             // Start the connection to the database
-            DBInteraction.startConnection();
+            DBInteraction.openConnection();
+            Neo4JInteraction.openSession();
+            try
+            {
+                Thread.sleep(500);
+            } catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
 
             // Run the actual program
             String programClosingStatus = UserInterface.display();
             System.out.println("Program closed with '" + programClosingStatus + "' status");
-            Log.trace("Program closed with '" + programClosingStatus + "' status");
+            Log.trace("Program closed with \"" + programClosingStatus + "\" status");
         }
 
-        // close the connection to the database
+        // close the connection to the database but first give 5 seconds for existing queries to finish
+        try
+        {
+            Thread.sleep(5000);
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         DBInteraction.closeConnection();
+        Neo4JInteraction.closeSession();
     }
 }

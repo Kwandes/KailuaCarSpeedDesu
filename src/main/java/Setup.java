@@ -6,7 +6,6 @@
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class Setup
@@ -16,16 +15,18 @@ public class Setup
     // setup the program before you actually run it. Return true if setup was successful
     public static boolean setupProgram()
     {
-
         // only continue if the config has loaded properly
 
         if (setupConfig())
         {
             setupDB();
+            setupNeo();
             setupSecurity();
             setupLog();
+            setupGen();
+            return true;
         }
-        return true;
+        return false;
     }
 
     // load the config file into the program. Return true if successful, false if not
@@ -63,8 +64,23 @@ public class Setup
         DBInteraction.setSchema(config.getProperty("schema"));
     }
 
+    // setup the Neo4j connection information and credentials
+    private static void setupNeo()
+    {
+        Neo4JInteraction.setUri(config.getProperty("uri"));
+        Neo4JInteraction.setPassword(config.getProperty("passWord"));
+        Neo4JInteraction.setUser(config.getProperty("user"));
+        // setup the driver (uses previously set attributes)
+        Neo4JInteraction.setDriver();
+    }
+
     private static void setupLog()
     {
         Log.setUserName(config.getProperty("username"));
+    }
+
+    private static void setupGen()
+    {
+        GenPerson.setupGenPerson();
     }
 }

@@ -7,7 +7,6 @@
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class Log
 {
@@ -19,7 +18,6 @@ public class Log
         WARNING
     }
 
-    private static String dateTime;
     private static String userName = "Bob";
     // threadpools are used for asynchronous usage of the database. They help with performance and speed of the program
     private static ExecutorService threadpool = Executors.newCachedThreadPool();
@@ -31,43 +29,42 @@ public class Log
         // The insert query contains all the relevant log information
         threadpool.submit(() ->
                 DBInteraction.updateData("INSERT INTO kailua_car_rental.program_log(log_level, log_message, log_time, user_name) VALUES ('" +
-                        level.toString() + "', '" + message + "', '" + getDateTime() + "', '" + userName + "');"));
+                        level.toString() + "', '" + message.replace("'", "\"") + "', '" + getDateTime() + "', '" + userName + "');"));
     }
 
     public static void log(Level level, String message, Exception e)
     {
-        Future<Integer> futureTask = threadpool.submit(() ->
-        DBInteraction.updateData("INSERT INTO kailua_car_rental.program_log(log_level, log_message, log_exception, log_time, user_name) VALUES ('" +
-                level + "', '" + message + "', '" + e + "', '" + getDateTime() + "', '" + userName + "');"));
+        threadpool.submit(() ->
+                DBInteraction.updateData("INSERT INTO kailua_car_rental.program_log(log_level, log_message, log_exception, log_time, user_name) VALUES ('" +
+                        level + "', '" + message.replace("'", "\"") + "', '" + e + "', '" + getDateTime() + "', '" + userName + "');"));
     }
 
     public static void trace(String message)
     {
-        Future<Integer> futureTask = threadpool.submit(() ->
+        threadpool.submit(() ->
                 DBInteraction.updateData("INSERT INTO kailua_car_rental.program_log(log_level, log_message, log_time, user_name) VALUES ('" +
-                        Level.TRACE + "', '" + message + "', '" + getDateTime() + "', '" + userName + "');"));
+                        Level.TRACE + "', '" + message.replace("'", "\"") + "', '" + getDateTime() + "', '" + userName + "');"));
     }
 
     public static void info(String message)
     {
-        Future<Integer> futureTask = threadpool.submit(() ->
+        threadpool.submit(() ->
                 DBInteraction.updateData("INSERT INTO kailua_car_rental.program_log(log_level, log_message, log_time, user_name) VALUES ('" +
-                        Level.INFO + "', '" + message + "', '" + getDateTime() + "', '" + userName + "');"));
+                        Level.INFO + "', '" + message.replace("'", "\"") + "', '" + getDateTime() + "', '" + userName + "');"));
     }
 
     public static void warning(String message)
     {
-        Future<Integer> futureTask = threadpool.submit(() ->
+        threadpool.submit(() ->
                 DBInteraction.updateData("INSERT INTO kailua_car_rental.program_log(log_level, log_message, log_time, user_name) VALUES ('" +
-                        Level.WARNING + "', '" + message + "', '" + getDateTime() + "', '" + userName + "');"));
+                        Level.WARNING + "', '" + message.replace("'", "\"") + "', '" + getDateTime() + "', '" + userName + "');"));
     }
-
 
     public static void warning(String message, Exception e)
     {
-        Future<Integer> futureTask = threadpool.submit(() ->
+        threadpool.submit(() ->
                 DBInteraction.updateData("INSERT INTO kailua_car_rental.program_log(log_level, log_message, log_exception, log_time, user_name) VALUES ('" +
-                        Level.WARNING + "', '" + message + "', '" + e + "', '" + getDateTime() + "', '" + userName + "');"));
+                        Level.WARNING + "', '" + message.replace("'", "\"") + "', '" + e.toString().replace("'", "\"") + "', '" + getDateTime() + "', '" + userName + "');"));
     }
 
     // get current date and time, with milliseconds up to the 6th digit

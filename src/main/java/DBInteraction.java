@@ -20,7 +20,7 @@ public class DBInteraction
             return rs;
         } catch (SQLException e)
         {
-            System.out.println("Shits fucked up yo!");
+            System.out.println("Failed to get data from the DB");
             e.printStackTrace();
             Log.warning("Failed to get data from the database", e);
             return null;
@@ -37,7 +37,7 @@ public class DBInteraction
             return rs;
         } catch (SQLException e)
         {
-            System.out.println("Shits fucked up yo!");
+            System.out.println("Failed to update the DB");
             e.printStackTrace();
             Log.warning("Failed to update the database", e);
             return -1;
@@ -45,7 +45,7 @@ public class DBInteraction
     }
 
     // start a connection to the database. Has to be run before the query commands can be used
-    public static void startConnection()
+    public static void openConnection()
     {
         try
         {
