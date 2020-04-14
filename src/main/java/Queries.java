@@ -1002,7 +1002,6 @@ public class Queries {
                 String newCustomerQuery = createCustomerQuery();
                 // if returned query is null (for example, user has aborted registration), break out
                 if (newCustomerQuery.equals("")) break;
-                System.out.println(newCustomerQuery);
                 // send the query to the DB
                 int result = DBInteraction.updateData(newCustomerQuery);
                 if (result == -1) formattedPrint("Failed to create a new customer, contact Administrator for help");
